@@ -84,7 +84,8 @@ fig = go.Figure(
             "buttons": [
                 {"label": "▶️ Play", "method": "animate",
                  "args": [None, {"frame": {"duration": int(1000*speed), "redraw": True}, "fromcurrent": True}]},
-                {"label": "⏸️ Pause", "method": "animate", "args": [[None], {"mode": "immediate", "frame": {"duration": 0}, "transition": {"duration": 0}}]}
+                {"label": "⏸️ Pause", "method": "animate",
+                 "args": [[None], {"mode": "immediate", "frame": {"duration": 0}, "transition": {"duration": 0}}]}
             ],
             "direction": "left",
             "pad": {"r": 10, "t": 10},
