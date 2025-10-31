@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib.animation import PillowWriter
+import tempfile
 import io
 
 # --- Streamlit page config ---
@@ -62,14 +63,14 @@ def update(frame):
 
 ani = animation.FuncAnimation(fig, update, frames=60, interval=100, blit=False)
 
-# --- Save to BytesIO as GIF ---
-buf = io.BytesIO()
-writer = PillowWriter(fps=20)
-ani.save(buf, writer=writer)
-buf.seek(0)
+# --- Save animation to temporary GIF file ---
+with tempfile.NamedTemporaryFile(suffix=".gif") as tmpfile:
+    ani.save(tmpfile.name, writer=PillowWriter(fps=20))
+    tmpfile.seek(0)
+    gif_bytes = tmpfile.read()
 
 # --- Display GIF in Streamlit ---
-st.image(buf, caption=f"{mode} Simulation", use_container_width=True)
+st.image(gif_bytes, caption=f"{mode} Simulation", use_container_width=True)
 
 st.markdown("---")
 st.markdown("🧭 *Animated vector field illustrating air flow using vector calculus concepts.*")
