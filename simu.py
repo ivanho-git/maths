@@ -2,6 +2,8 @@ import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+from matplotlib.animation import PillowWriter
+import io
 
 # --- Streamlit page config ---
 st.set_page_config(page_title="🌦️ Weather Flow Simulation", layout="centered")
@@ -60,13 +62,14 @@ def update(frame):
 
 ani = animation.FuncAnimation(fig, update, frames=60, interval=100, blit=False)
 
-# --- Display animation in Streamlit ---
-from matplotlib.animation import PillowWriter
-import io
-
+# --- Save to BytesIO as GIF ---
 buf = io.BytesIO()
-ani.save(buf, format='gif', writer=PillowWriter(fps=20))
-st.image(buf.getvalue(), caption=f"{mode} Simulation", use_container_width=True)
+writer = PillowWriter(fps=20)
+ani.save(buf, writer=writer)
+buf.seek(0)
+
+# --- Display GIF in Streamlit ---
+st.image(buf, caption=f"{mode} Simulation", use_container_width=True)
 
 st.markdown("---")
 st.markdown("🧭 *Animated vector field illustrating air flow using vector calculus concepts.*")
