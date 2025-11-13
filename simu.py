@@ -577,7 +577,7 @@ with tab2:
 st.markdown("---")
 st.markdown("""
 <div style='text-align: center; color: gray;'>
-    <p>🌍 Weather Simulation Lab | Daksh Agarwal Ibhan Mukherjee Uddipan Kalita Udayan Nath </p>
+    <p>🌍 Weather Simulation Lab | Daksh Agarwal | Ibhan Mukherjee | Uddipan Kalita | Udayan Nath </p>
     <p>Built By Engineers For The Love Of Mathematics Not Just For Credits</p>
 </div>
 """, unsafe_allow_html=True)
