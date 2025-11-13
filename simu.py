@@ -42,11 +42,22 @@ with tab1:
             dPx, dPy = np.gradient(P)
             U, V = -magnitude*dPx, -magnitude*dPy
         elif field_mode == "Divergence (Air Outflow/Inflow)":
-            U = magnitude * (X * np.cos(t) - Y * np.sin(t))
-            V = magnitude * (Y * np.cos(t) + X * np.sin(t))
+            # Create clear radial divergence/convergence pattern
+            # Pulsating flow: expands outward then contracts inward
+            pulse = np.sin(t) * 0.8 + 0.2  # Oscillates between 0.2 and 1.0
+            
+            # Radial distance from center
+            R = np.sqrt(X**2 + Y**2) + 0.1
+            
+            # Radial outward/inward flow
+            # pulse > 0.5: Divergence (flowing OUT)
+            # pulse < 0.5: Convergence (flowing IN)
+            U = magnitude * (X / R) * pulse * 2.0
+            V = magnitude * (Y / R) * pulse * 2.0
         else:  # Curl
             U = -magnitude * Y * np.cos(t)
             V = magnitude * X * np.sin(t)
+        
         divergence = np.gradient(U, axis=1) + np.gradient(V, axis=0)
         curl = np.gradient(V, axis=1) - np.gradient(U, axis=0)
         return U, V, divergence, curl
@@ -55,84 +66,155 @@ with tab1:
     # 2D Animation (Matplotlib quiver)
     # -------------------------------
     if view_mode == "2D Animation":
-        fig, ax = plt.subplots(figsize=(7,7))
-        ax.set_xlim(-2, 2)
-        ax.set_ylim(-2, 2)
-        ax.set_title(field_mode, fontsize=14, fontweight='bold', pad=20)
-        ax.set_aspect('equal')
-        ax.set_xlabel('X', fontsize=10)
-        ax.set_ylabel('Y', fontsize=10)
-
-        U, V, divergence, curl = compute_field(0)
+        # Initialize session state for animation control
+        if 'animation_state' not in st.session_state:
+            st.session_state.animation_state = 'divergence'  # Start with divergence
+        if 'show_animation' not in st.session_state:
+            st.session_state.show_animation = True
         
-        # Adjust quiver appearance based on field mode
+        # For divergence mode, create interactive step-by-step visualization
         if field_mode == "Divergence (Air Outflow/Inflow)":
-            quiver = ax.quiver(X, Y, U, V, color='darkblue', pivot='mid', scale=12, width=0.008, alpha=0.8)
-        else:
-            quiver = ax.quiver(X, Y, U, V, color='dodgerblue', pivot='mid', scale=15, width=0.007)
-
-        if show_heatmap:
-            if field_mode == "Divergence (Air Outflow/Inflow)":
-                # For divergence, show the actual divergence field
+            # Create two columns for controls
+            ctrl_col1, ctrl_col2, ctrl_col3 = st.columns([1, 2, 1])
+            
+            with ctrl_col2:
+                st.markdown("### 🎮 Interactive Divergence/Convergence Control")
+                
+                # State indicator
+                if st.session_state.animation_state == 'divergence':
+                    st.success("🌬️ **Current State: DIVERGENCE** - Air spreading outward")
+                else:
+                    st.info("🌪️ **Current State: CONVERGENCE** - Air coming inward")
+                
+                # Control buttons
+                col_a, col_b = st.columns(2)
+                with col_a:
+                    if st.button("▶️ Show Next State", use_container_width=True, type="primary"):
+                        # Toggle state
+                        if st.session_state.animation_state == 'divergence':
+                            st.session_state.animation_state = 'convergence'
+                        else:
+                            st.session_state.animation_state = 'divergence'
+                        st.rerun()
+                
+                with col_b:
+                    if st.button("🔄 Reset to Divergence", use_container_width=True):
+                        st.session_state.animation_state = 'divergence'
+                        st.rerun()
+            
+            # Generate static image based on current state
+            fig, ax = plt.subplots(figsize=(8,8))
+            ax.set_xlim(-2, 2)
+            ax.set_ylim(-2, 2)
+            ax.set_aspect('equal')
+            ax.set_xlabel('X', fontsize=11)
+            ax.set_ylabel('Y', fontsize=11)
+            
+            # Compute field for current state
+            if st.session_state.animation_state == 'divergence':
+                t_fixed = np.pi/2  # Maximum divergence
+                title_text = "DIVERGENCE: Air Spreading Outward"
+                title_color = 'darkred'
+                annotation_text = "DIVERGENCE\n(Air Spreading OUT)\n🌬️ ⬆️\nHigh Pressure Zone"
+                annotation_color = 'lightcoral'
+            else:
+                t_fixed = 3*np.pi/2  # Maximum convergence
+                title_text = "CONVERGENCE: Air Coming Inward"
+                title_color = 'darkblue'
+                annotation_text = "CONVERGENCE\n(Air Coming IN)\n🌪️ ⬇️\nLow Pressure Zone\nStorms Form Here!"
+                annotation_color = 'lightblue'
+            
+            U, V, divergence, curl = compute_field(t_fixed)
+            
+            ax.set_title(title_text, fontsize=16, fontweight='bold', pad=20, color=title_color)
+            
+            # Draw quiver plot
+            quiver = ax.quiver(X, Y, U, V, color='darkblue', pivot='mid', scale=12, 
+                              width=0.009, alpha=0.85, headwidth=4, headlength=5)
+            
+            if show_heatmap:
+                # Show divergence field
                 div_img = ax.imshow(divergence, extent=[-2,2,-2,2], origin='lower', 
                                    cmap='RdBu_r', alpha=0.6, vmin=-2, vmax=2)
                 cbar = plt.colorbar(div_img, ax=ax, fraction=0.046, pad=0.04)
-                cbar.set_label('Divergence (∇·V)', rotation=270, labelpad=20, fontsize=10)
-                # Add a central marker to show the center point
-                ax.plot(0, 0, 'ko', markersize=8, label='Center')
+                cbar.set_label('Divergence (∇·V)', rotation=270, labelpad=20, fontsize=11)
+            
+            # Add center marker
+            ax.plot(0, 0, 'ko', markersize=10, label='Center Point', zorder=5)
+            ax.legend(loc='upper right')
+            
+            # Add annotation box
+            text_annotation = ax.text(0.02, 0.98, annotation_text, transform=ax.transAxes, 
+                                     fontsize=12, verticalalignment='top', fontweight='bold',
+                                     bbox=dict(boxstyle='round', facecolor=annotation_color, 
+                                              alpha=0.9, edgecolor='black', linewidth=2))
+            
+            plt.tight_layout()
+            st.pyplot(fig)
+            plt.close()
+            
+            # Add detailed explanation
+            st.markdown("---")
+            if st.session_state.animation_state == 'divergence':
+                st.error("""
+                ### 🌬️ DIVERGENCE Explained:
+                - **All arrows point OUTWARD** from the center
+                - Air molecules are **spreading apart** (like inflating a balloon)
+                - **Positive divergence** = ∇·V > 0
+                - **Weather effect**: Associated with **HIGH pressure systems**
+                - Air **sinks** and spreads out horizontally
+                - Typically brings **clear, dry weather** ☀️
+                - Example: Anticyclones, fair weather systems
+                """)
             else:
+                st.info("""
+                ### 🌪️ CONVERGENCE Explained:
+                - **All arrows point INWARD** toward the center
+                - Air molecules are **coming together** (like water down a drain)
+                - **Negative divergence** (convergence) = ∇·V < 0
+                - **Weather effect**: Associated with **LOW pressure systems**
+                - Air **rises** as it converges, leading to **cloud formation**
+                - Typically brings **cloudy, rainy, stormy weather** ⛈️
+                - Example: Cyclones, storm systems, frontal zones
+                - **This is where weather happens!**
+                """)
+            
+        else:
+            # For other modes, use the regular animation
+            fig, ax = plt.subplots(figsize=(7,7))
+            ax.set_xlim(-2, 2)
+            ax.set_ylim(-2, 2)
+            ax.set_title(field_mode, fontsize=14, fontweight='bold', pad=20)
+            ax.set_aspect('equal')
+            ax.set_xlabel('X', fontsize=10)
+            ax.set_ylabel('Y', fontsize=10)
+
+            U, V, divergence, curl = compute_field(0)
+            quiver = ax.quiver(X, Y, U, V, color='dodgerblue', pivot='mid', scale=15, width=0.007)
+
+            if show_heatmap:
                 div_img = ax.imshow(divergence, extent=[-2,2,-2,2], origin='lower', 
                                    cmap='RdBu', alpha=0.5)
                 plt.colorbar(div_img, ax=ax, fraction=0.046, pad=0.04, label='Divergence')
 
-        # Add text annotation for divergence mode
-        if field_mode == "Divergence (Air Outflow/Inflow)":
-            text_annotation = ax.text(0.02, 0.98, '', transform=ax.transAxes, 
-                                     fontsize=11, verticalalignment='top',
-                                     bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
+            def update(frame):
+                t = frame * 0.15
+                U, V, divergence, curl = compute_field(t)
+                quiver.set_UVC(U, V)
+                
+                if show_heatmap:
+                    div_img.set_data(divergence)
+                
+                return quiver,
 
-        def update(frame):
-            t = frame * 0.15
-            U, V, divergence, curl = compute_field(t)
-            quiver.set_UVC(U, V)
+            ani = animation.FuncAnimation(fig, update, frames=80, interval=80, blit=False)
             
-            if show_heatmap:
-                div_img.set_data(divergence)
-            
-            # Update annotation for divergence
-            if field_mode == "Divergence (Air Outflow/Inflow)":
-                pulse = np.sin(t) * 0.8 + 0.2
-                if pulse > 0.5:
-                    state = "DIVERGENCE\n(Air Spreading OUT)\n🌬️ ⬆️"
-                    color = 'lightcoral'
-                else:
-                    state = "CONVERGENCE\n(Air Coming IN)\n🌪️ ⬇️"
-                    color = 'lightblue'
-                text_annotation.set_text(state)
-                text_annotation.set_bbox(dict(boxstyle='round', facecolor=color, alpha=0.8))
-            
-            return quiver,
+            with tempfile.NamedTemporaryFile(suffix=".gif", delete=False) as tmpfile:
+                ani.save(tmpfile.name, writer=PillowWriter(fps=25))
+                tmpfile.seek(0)
+                gif_bytes = tmpfile.read()
 
-        ani = animation.FuncAnimation(fig, update, frames=80, interval=80, blit=False)
-        
-        with tempfile.NamedTemporaryFile(suffix=".gif", delete=False) as tmpfile:
-            ani.save(tmpfile.name, writer=PillowWriter(fps=25))
-            tmpfile.seek(0)
-            gif_bytes = tmpfile.read()
-
-        st.image(gif_bytes, caption=f"{field_mode} (2D Animated Field)", use_container_width=True)
-        
-        # Add explanation below for divergence
-        if field_mode == "Divergence (Air Outflow/Inflow)":
-            st.info("""
-            🌬️ **Understanding the Animation:**
-            - **RED regions** = Positive Divergence → Air spreading outward (like air escaping a balloon)
-            - **BLUE regions** = Negative Divergence (Convergence) → Air coming together (like water down a drain)
-            - **Arrows pointing OUTWARD** from center = Divergence (high pressure, sinking air)
-            - **Arrows pointing INWARD** to center = Convergence (low pressure, rising air, storms form here!)
-            
-            The animation alternates between these states to show both phenomena clearly.
-            """)
+            st.image(gif_bytes, caption=f"{field_mode} (2D Animated Field)", use_container_width=True)
 
     # -------------------------------
     # Particle Animation (Plotly)
