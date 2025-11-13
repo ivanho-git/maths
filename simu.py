@@ -15,451 +15,181 @@ Explore **Numerical Weather Prediction (NWP)** interactively.
 See how **gradient, divergence, and curl** explain winds, storms, and cyclones.
 """)
 
-# --- Create Tabs ---
-tab1, tab2 = st.tabs(["🌪️ Vector Field Simulation", "🌊 Navier-Stokes Theory"])
+# --- Sidebar controls ---
+view_mode = st.sidebar.radio("Select View Mode:", ["2D Animation", "3D Animation", "Particle Animation"])
+field_mode = st.sidebar.radio("Select Vector Field:", 
+                              ["Gradient (Pressure Field)", "Divergence (Air Outflow/Inflow)", "Curl (Cyclonic Motion)"])
+show_heatmap = st.sidebar.checkbox("Show Heatmap (2D only)", value=True)
+magnitude = st.sidebar.slider("Field Magnitude", 0.1, 5.0, 1.0)
 
-# ==========================================
-# TAB 1: Vector Field Simulation (Original)
-# ==========================================
-with tab1:
-    # --- Sidebar controls ---
-    view_mode = st.sidebar.radio("Select View Mode:", ["2D Animation", "3D Animation", "Particle Animation"])
-    field_mode = st.sidebar.radio("Select Vector Field:", 
-                                  ["Gradient (Pressure Field)", "Divergence (Air Outflow/Inflow)", "Curl (Cyclonic Motion)"])
-    show_heatmap = st.sidebar.checkbox("Show Heatmap (2D only)", value=True)
-    magnitude = st.sidebar.slider("Field Magnitude", 0.1, 5.0, 1.0)
+# --- Grid setup ---
+n = 20
+x = np.linspace(-2, 2, n)
+y = np.linspace(-2, 2, n)
+X, Y = np.meshgrid(x, y)
 
-    # --- Grid setup ---
-    n = 20
-    x = np.linspace(-2, 2, n)
-    y = np.linspace(-2, 2, n)
-    X, Y = np.meshgrid(x, y)
-
-    # --- Function to compute vector fields ---
-    def compute_field(t=0):
-        if field_mode == "Gradient (Pressure Field)":
-            P = np.exp(-X**2 - Y**2)
-            dPx, dPy = np.gradient(P)
-            U, V = -magnitude*dPx, -magnitude*dPy
-        elif field_mode == "Divergence (Air Outflow/Inflow)":
-            U = magnitude * (X * np.cos(t) - Y * np.sin(t))
-            V = magnitude * (Y * np.cos(t) + X * np.sin(t))
-        else:  # Curl
-            U = -magnitude * Y * np.cos(t)
-            V = magnitude * X * np.sin(t)
-        divergence = np.gradient(U, axis=1) + np.gradient(V, axis=0)
-        curl = np.gradient(V, axis=1) - np.gradient(U, axis=0)
-        return U, V, divergence, curl
-
-    # -------------------------------
-    # 2D Animation (Matplotlib quiver)
-    # -------------------------------
-    if view_mode == "2D Animation":
-        fig, ax = plt.subplots(figsize=(6,6))
-        ax.set_xlim(-2, 2)
-        ax.set_ylim(-2, 2)
-        ax.set_title(field_mode, fontsize=14)
-        ax.set_aspect('equal')
-        ax.axis('off')
-
-        U, V, divergence, curl = compute_field(0)
-        quiver = ax.quiver(X, Y, U, V, color='dodgerblue', pivot='mid', scale=15, width=0.007)
-
-        if show_heatmap:
-            div_img = ax.imshow(divergence, extent=[-2,2,-2,2], origin='lower', cmap='RdBu', alpha=0.5)
-            plt.colorbar(div_img, ax=ax, fraction=0.046, pad=0.04, label='Divergence')
-
-        def update(frame):
-            U, V, divergence, curl = compute_field(frame * 0.2)
-            quiver.set_UVC(U, V)
-            if show_heatmap:
-                div_img.set_data(divergence)
-            return quiver,
-
-        ani = animation.FuncAnimation(fig, update, frames=60, interval=100, blit=False)
-        
-        with tempfile.NamedTemporaryFile(suffix=".gif") as tmpfile:
-            ani.save(tmpfile.name, writer=PillowWriter(fps=20))
-            tmpfile.seek(0)
-            gif_bytes = tmpfile.read()
-
-        st.image(gif_bytes, caption=f"{field_mode} (2D Animated Field)", use_container_width=True)
-
-    # -------------------------------
-    # Particle Animation (Plotly)
-    # -------------------------------
-    elif view_mode == "Particle Animation":
-        num_particles = 200
-        px = np.random.uniform(-2,2,num_particles)
-        py = np.random.uniform(-2,2,num_particles)
-        dt = 0.1
-        n_frames = 60
-
-        frames = []
-        for f in range(n_frames):
-            U, V, _, _ = compute_field(f*0.1)
-            ix = np.clip(((px + 2)/4 * (n-1)).astype(int), 0, n-1)
-            iy = np.clip(((py + 2)/4 * (n-1)).astype(int), 0, n-1)
-            vx = U[iy, ix]
-            vy = V[iy, ix]
-            px += vx*dt
-            py += vy*dt
-            px = np.mod(px+2, 4)-2
-            py = np.mod(py+2, 4)-2
-            frames.append(go.Frame(data=[go.Scatter(x=px, y=py, mode='markers',
-                                                    marker=dict(color='blue', size=5))]))
-
-        fig = go.Figure(
-            data=[go.Scatter(x=px, y=py, mode='markers', marker=dict(color='blue', size=5))],
-            layout=go.Layout(
-                xaxis=dict(range=[-2,2]),
-                yaxis=dict(range=[-2,2]),
-                title=f"{field_mode} - Particle Animation",
-                updatemenus=[dict(type="buttons",
-                                  buttons=[dict(label="▶️ Play",
-                                                method="animate",
-                                                args=[None, {"frame":{"duration":50,"redraw":True},
-                                                             "fromcurrent":True}])])]
-            ),
-            frames=frames
-        )
-        st.plotly_chart(fig, use_container_width=True)
-
-    # -------------------------------
-    # 3D Animation (Plotly Cone)
-    # -------------------------------
-    else:
-        n3 = 8
-        x3 = np.linspace(-2, 2, n3)
-        y3 = np.linspace(-2, 2, n3)
-        z3 = np.linspace(-2, 2, n3)
-        X3, Y3, Z3 = np.meshgrid(x3, y3, z3)
-
-        frames = []
-        for t in np.linspace(0, 2*np.pi, 20):
-            if field_mode == "Gradient (Pressure Field)":
-                Phi = np.exp(-X3**2 - Y3**2 - Z3**2)
-                U = -2 * X3 * Phi * magnitude
-                V = -2 * Y3 * Phi * magnitude
-                W = -2 * Z3 * Phi * magnitude
-            elif field_mode == "Divergence (Air Outflow/Inflow)":
-                U = X3 * np.cos(t) - Y3 * np.sin(t)
-                V = Y3 * np.cos(t) + X3 * np.sin(t)
-                W = Z3 * np.sin(t)
-            else:
-                U = -Y3 * np.cos(t)
-                V = X3 * np.sin(t)
-                W = np.sin(np.sqrt(X3**2 + Y3**2))
-            frames.append(go.Frame(data=[go.Cone(
-                x=X3.flatten(), y=Y3.flatten(), z=Z3.flatten(),
-                u=U.flatten(), v=V.flatten(), w=W.flatten(),
-                colorscale="Viridis", sizemode="absolute", sizeref=0.5, showscale=False
-            )], name=f"t={t:.2f}"))
-
-        fig3 = go.Figure(
-            data=frames[0].data,
-            layout=go.Layout(
-                scene=dict(xaxis=dict(range=[-2,2]), yaxis=dict(range=[-2,2]), zaxis=dict(range=[-2,2]), aspectmode="cube"),
-                updatemenus=[dict(
-                    type="buttons",
-                    showactive=False,
-                    buttons=[dict(label="▶️ Play",
-                                  method="animate",
-                                  args=[None, {"frame": {"duration":100, "redraw": True}, "fromcurrent": True}])])]
-            ),
-            frames=frames
-        )
-        st.plotly_chart(fig3, use_container_width=True)
-
-    # -------------------------------
-    # Theory & Math
-    # -------------------------------
-    st.markdown("---")
-    st.header("📘 Theory Behind the Simulation")
-    st.markdown("""
-    Numerical Weather Prediction (NWP) models use **gradient, divergence, and curl** to compute air motion:
-
-    - **Gradient (∇P):** Drives air from high → low pressure (wind formation)  
-    - **Divergence (∇·V):** Air spreading/converging; identifies cloud formation & rainfall  
-    - **Curl (∇×V):** Measures vorticity; forecasts cyclones, tornadoes, and rotational systems
-    """)
-
-    st.subheader("Mathematical Formulas in NWP")
+# --- Function to compute vector fields ---
+def compute_field(t=0):
     if field_mode == "Gradient (Pressure Field)":
-        st.latex(r"\vec{F} = -\frac{1}{\rho} \nabla P")
+        P = np.exp(-X**2 - Y**2)
+        dPx, dPy = np.gradient(P)
+        U, V = -magnitude*dPx, -magnitude*dPy
     elif field_mode == "Divergence (Air Outflow/Inflow)":
-        st.latex(r"\nabla \cdot \vec{V} = \frac{\partial U}{\partial x} + \frac{\partial V}{\partial y} + \frac{\partial W}{\partial z}")
-    else:
-        st.latex(r"\nabla \times \vec{V} = \text{Curl}(\vec{V})")
+        U = magnitude * (X * np.cos(t) - Y * np.sin(t))
+        V = magnitude * (Y * np.cos(t) + X * np.sin(t))
+    else:  # Curl
+        U = -magnitude * Y * np.cos(t)
+        V = magnitude * X * np.sin(t)
+    divergence = np.gradient(U, axis=1) + np.gradient(V, axis=0)
+    curl = np.gradient(V, axis=1) - np.gradient(U, axis=0)
+    return U, V, divergence, curl
 
-    st.markdown("""
-    These operators are calculated at **every grid point** in NWP simulations, which then predict:
-    - Wind patterns  
-    - Cloud formation & precipitation  
-    - Cyclones & storms  
-    - Overall weather system evolution
-    """)
-    st.info("💡 Switch between 2D, 3D, and Particle Animation to connect mathematical concepts with real-world weather predictions.")
+# -------------------------------
+# 2D Animation (Matplotlib quiver)
+# -------------------------------
+if view_mode == "2D Animation":
+    fig, ax = plt.subplots(figsize=(6,6))
+    ax.set_xlim(-2, 2)
+    ax.set_ylim(-2, 2)
+    ax.set_title(field_mode, fontsize=14)
+    ax.set_aspect('equal')
+    ax.axis('off')
 
-# ==========================================
-# TAB 2: Navier-Stokes Theory
-# ==========================================
-with tab2:
-    st.header("🌊 Navier-Stokes Equations in Weather Prediction")
-    
-    st.markdown("""
-    The **Navier-Stokes equations** are the fundamental governing equations of fluid dynamics and form the 
-    mathematical foundation of all modern weather prediction models. These equations describe how the velocity, 
-    pressure, temperature, and density of a moving fluid are related.
-    """)
-    
-    # Main Navier-Stokes Equations
-    st.subheader("📐 The Navier-Stokes Equations")
-    
-    col1, col2 = st.columns([3, 2])
-    
-    with col1:
-        st.markdown("**Momentum Equation (Newton's Second Law for Fluids):**")
-        st.latex(r"\rho \left(\frac{\partial \mathbf{u}}{\partial t} + (\mathbf{u} \cdot \nabla)\mathbf{u}\right) = -\nabla P + \mu \nabla^2 \mathbf{u} + \mathbf{f}")
-        
-        st.markdown("**Continuity Equation (Mass Conservation):**")
-        st.latex(r"\frac{\partial \rho}{\partial t} + \nabla \cdot (\rho \mathbf{u}) = 0")
-        
-        st.markdown("**For incompressible flows:**")
-        st.latex(r"\nabla \cdot \mathbf{u} = 0")
-    
-    with col2:
-        st.info("""
-        **Variables:**
-        - **ρ**: Air density (kg/m³)
-        - **u**: Velocity field (m/s)
-        - **P**: Pressure (Pa)
-        - **μ**: Dynamic viscosity
-        - **f**: Body forces (gravity, Coriolis)
-        - **t**: Time
-        """)
-    
-    st.markdown("---")
-    
-    # Physical Interpretation
-    st.subheader("🔍 Physical Interpretation")
-    
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
-        st.markdown("### 1️⃣ Acceleration Term")
-        st.latex(r"\frac{\partial \mathbf{u}}{\partial t}")
-        st.markdown("**Local acceleration** - How fast the wind is changing at a fixed point.")
-    
-    with col2:
-        st.markdown("### 2️⃣ Advection Term")
-        st.latex(r"(\mathbf{u} \cdot \nabla)\mathbf{u}")
-        st.markdown("**Convective acceleration** - Wind carrying its own momentum.")
-    
-    with col3:
-        st.markdown("### 3️⃣ Pressure Gradient")
-        st.latex(r"-\nabla P")
-        st.markdown("**Pressure force** - Drives air from high to low pressure.")
-    
-    col4, col5, col6 = st.columns(3)
-    
-    with col4:
-        st.markdown("### 4️⃣ Viscous Term")
-        st.latex(r"\mu \nabla^2 \mathbf{u}")
-        st.markdown("**Friction/diffusion** - Air resistance and turbulent mixing.")
-    
-    with col5:
-        st.markdown("### 5️⃣ Body Forces")
-        st.latex(r"\mathbf{f}")
-        st.markdown("**External forces** - Gravity, Coriolis effect (Earth's rotation).")
-    
-    with col6:
-        st.markdown("### 6️⃣ Continuity")
-        st.latex(r"\nabla \cdot \mathbf{u} = 0")
-        st.markdown("**Mass conservation** - Air is neither created nor destroyed.")
-    
-    st.markdown("---")
-    
-    # Connection to Weather
-    st.subheader("🌍 How Navier-Stokes Predicts Weather")
-    
-    st.markdown("""
-    Modern weather forecasting models solve the Navier-Stokes equations coupled with additional equations for:
-    
-    1. **Thermodynamics** (Energy/Temperature evolution)
-       - First Law of Thermodynamics
-       - Diabatic heating (solar radiation, latent heat)
-    
-    2. **Moisture Transport** (Humidity and precipitation)
-       - Water vapor advection
-       - Cloud microphysics
-       - Phase changes (evaporation, condensation, precipitation)
-    
-    3. **Equation of State** (Relating pressure, temperature, and density)
-       - Ideal gas law: P = ρRT
-    
-    4. **Turbulence Models** (Subgrid-scale processes)
-       - Parameterization of unresolved eddies
-       - Boundary layer physics
-    """)
-    
-    # Real-world applications
-    st.subheader("🖥️ Numerical Weather Prediction (NWP) Systems")
-    
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.markdown("""
-        **Major Global Weather Models:**
-        - **GFS** (NOAA, USA) - Global Forecast System
-        - **ECMWF** (Europe) - European Centre for Medium-Range Weather Forecasts
-        - **UKMO** (UK) - UK Met Office Unified Model
-        - **JMA** (Japan) - Japan Meteorological Agency
-        - **CMC** (Canada) - Canadian Meteorological Centre
-        """)
-    
-    with col2:
-        st.markdown("""
-        **Computational Requirements:**
-        - Grid resolution: 10-50 km globally, 1-3 km regionally
-        - Time steps: seconds to minutes
-        - Vertical levels: 50-137 atmospheric layers
-        - Compute time: Hours on supercomputers
-        - Data assimilation: Billions of observations daily
-        """)
-    
-    st.markdown("---")
-    
-    # Challenges
-    st.subheader("⚠️ The Challenge: Why Weather Prediction is Hard")
-    
-    st.warning("""
-    **Fundamental Difficulties:**
-    
-    1. **Nonlinearity**: The (u·∇)u term makes the equations highly nonlinear, leading to chaos and sensitivity to initial conditions
-    2. **Multiscale Physics**: Weather involves processes from molecular scales (micrometers) to planetary scales (thousands of km)
-    3. **Turbulence**: One of the biggest unsolved problems in physics - no exact analytical solution exists
-    4. **Computational Cost**: Solving Navier-Stokes on a global grid requires petaflops of computing power
-    5. **Initial Condition Uncertainty**: Small errors in current conditions grow exponentially (butterfly effect)
-    6. **Incomplete Physics**: Many processes must be approximated (clouds, radiation, surface interactions)
-    """)
-    
-    st.markdown("---")
-    
-    # Numerical Methods
-    st.subheader("🔢 Solving the Equations: Numerical Methods")
-    
-    st.markdown("""
-    Since analytical solutions don't exist for realistic atmospheric flows, meteorologists use:
-    
-    **Discretization Methods:**
-    - **Finite Differences**: Approximate derivatives on a grid
-    - **Finite Elements**: Solve on irregular meshes
-    - **Spectral Methods**: Decompose fields into wave components
-    
-    **Time Integration:**
-    - **Explicit schemes**: Euler, Runge-Kutta (stable but slow)
-    - **Implicit schemes**: Backward Euler (faster but requires solving large systems)
-    - **Semi-implicit**: Hybrid approaches for efficiency
-    
-    **Data Assimilation:**
-    - Combine observations with model forecasts
-    - Kalman filtering, variational methods (3D-Var, 4D-Var)
-    - Ensemble methods for uncertainty quantification
-    """)
-    
-    st.markdown("---")
-    
-    # Interactive Predictor Button
-    st.subheader("🚀 Try Weather Prediction with Navier-Stokes!")
-    
-    st.markdown("""
-    Ready to see Navier-Stokes in action? Our interactive weather predictor lets you:
-    - Adjust atmospheric parameters (density, viscosity, pressure, temperature)
-    - Visualize wind fields and pressure gradients
-    - See simplified weather predictions based on NS equations
-    - Explore the physics behind each prediction
-    """)
-    
-    # Create centered button
-    col1, col2, col3 = st.columns([1, 2, 1])
-    
-    with col2:
-        st.markdown("""
-        <style>
-        .stButton > button {
-            width: 100%;
-            height: 60px;
-            font-size: 20px;
-            font-weight: bold;
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-        }
-        .stButton > button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-        </style>
-        """, unsafe_allow_html=True)
-        
-        if st.button("🌦️ Predict Weather with Navier-Stokes"):
-            st.markdown("""
-            <meta http-equiv="refresh" content="0; url=https://navierstokes.streamlit.app/" />
-            """, unsafe_allow_html=True)
-            st.success("🔄 Redirecting to Weather Predictor...")
-            st.markdown("[Click here if not redirected automatically](https://navierstokes.streamlit.app/)")
-    
-    st.markdown("---")
-    
-    # Fun Facts
-    with st.expander("🎓 Fun Facts About Navier-Stokes"):
-        st.markdown("""
-        1. **Million Dollar Problem**: Proving the existence and smoothness of Navier-Stokes solutions in 3D is one of the 
-           seven Millennium Prize Problems. Solve it and win $1,000,000 from the Clay Mathematics Institute!
-        
-        2. **Named After Two Mathematicians**: 
-           - Claude-Louis Navier (French, 1785-1836)
-           - George Gabriel Stokes (Irish, 1819-1903)
-        
-        3. **Universal Application**: The same equations govern:
-           - Weather and climate
-           - Ocean currents
-           - Blood flow in arteries
-           - Airflow around aircraft
-           - Turbulence in coffee stirring
-        
-        4. **Predictability Limit**: Due to chaos, weather forecasts are generally reliable only up to 7-10 days, 
-           no matter how powerful our computers become!
-        
-        5. **Supercomputer Power**: NOAA's weather supercomputers can perform over 12 quadrillion calculations per second!
-        """)
-    
-    # References
-    with st.expander("📚 Further Reading"):
-        st.markdown("""
-        **Books:**
-        - *Atmospheric Modeling, Data Assimilation and Predictability* by Eugenia Kalnay
-        - *Numerical Weather and Climate Prediction* by Thomas T. Warner
-        - *An Introduction to Fluid Dynamics* by G.K. Batchelor
-        
-        **Online Resources:**
-        - [NOAA's Numerical Weather Prediction](https://www.weather.gov/media/notification/pdfs/scn20-97_nws_supercomputer_aac.pdf)
-        - [ECMWF Documentation](https://www.ecmwf.int/en/forecasts/documentation-and-support)
-        - [Clay Mathematics Institute - Navier-Stokes Problem](https://www.claymath.org/millennium-problems/navier-stokes-equation)
-        
-        **Academic Papers:**
-        - Lynch, P. (2008). "The origins of computer weather prediction and climate modeling"
-        - Bauer, P., Thorpe, A., & Brunet, G. (2015). "The quiet revolution of numerical weather prediction"
-        """)
+    U, V, divergence, curl = compute_field(0)
+    quiver = ax.quiver(X, Y, U, V, color='dodgerblue', pivot='mid', scale=15, width=0.007)
 
-# Footer
+    if show_heatmap:
+        div_img = ax.imshow(divergence, extent=[-2,2,-2,2], origin='lower', cmap='RdBu', alpha=0.5)
+        plt.colorbar(div_img, ax=ax, fraction=0.046, pad=0.04, label='Divergence')
+
+    def update(frame):
+        U, V, divergence, curl = compute_field(frame * 0.2)
+        quiver.set_UVC(U, V)
+        if show_heatmap:
+            div_img.set_data(divergence)
+        return quiver,
+
+    ani = animation.FuncAnimation(fig, update, frames=60, interval=100, blit=False)
+    
+    with tempfile.NamedTemporaryFile(suffix=".gif") as tmpfile:
+        ani.save(tmpfile.name, writer=PillowWriter(fps=20))
+        tmpfile.seek(0)
+        gif_bytes = tmpfile.read()
+
+    st.image(gif_bytes, caption=f"{field_mode} (2D Animated Field)", use_container_width=True)
+
+# -------------------------------
+# Particle Animation (Plotly)
+# -------------------------------
+elif view_mode == "Particle Animation":
+    num_particles = 200
+    px = np.random.uniform(-2,2,num_particles)
+    py = np.random.uniform(-2,2,num_particles)
+    dt = 0.1
+    n_frames = 60
+
+    frames = []
+    for f in range(n_frames):
+        U, V, _, _ = compute_field(f*0.1)
+        ix = np.clip(((px + 2)/4 * (n-1)).astype(int), 0, n-1)
+        iy = np.clip(((py + 2)/4 * (n-1)).astype(int), 0, n-1)
+        vx = U[iy, ix]
+        vy = V[iy, ix]
+        px += vx*dt
+        py += vy*dt
+        px = np.mod(px+2, 4)-2
+        py = np.mod(py+2, 4)-2
+        frames.append(go.Frame(data=[go.Scatter(x=px, y=py, mode='markers',
+                                                marker=dict(color='blue', size=5))]))
+
+    fig = go.Figure(
+        data=[go.Scatter(x=px, y=py, mode='markers', marker=dict(color='blue', size=5))],
+        layout=go.Layout(
+            xaxis=dict(range=[-2,2]),
+            yaxis=dict(range=[-2,2]),
+            title=f"{field_mode} - Particle Animation",
+            updatemenus=[dict(type="buttons",
+                              buttons=[dict(label="▶️ Play",
+                                            method="animate",
+                                            args=[None, {"frame":{"duration":50,"redraw":True},
+                                                         "fromcurrent":True}])])]
+        ),
+        frames=frames
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+# -------------------------------
+# 3D Animation (Plotly Cone)
+# -------------------------------
+else:
+    n3 = 8
+    x3 = np.linspace(-2, 2, n3)
+    y3 = np.linspace(-2, 2, n3)
+    z3 = np.linspace(-2, 2, n3)
+    X3, Y3, Z3 = np.meshgrid(x3, y3, z3)
+
+    frames = []
+    for t in np.linspace(0, 2*np.pi, 20):
+        if field_mode == "Gradient (Pressure Field)":
+            Phi = np.exp(-X3**2 - Y3**2 - Z3**2)
+            U = -2 * X3 * Phi * magnitude
+            V = -2 * Y3 * Phi * magnitude
+            W = -2 * Z3 * Phi * magnitude
+        elif field_mode == "Divergence (Air Outflow/Inflow)":
+            U = X3 * np.cos(t) - Y3 * np.sin(t)
+            V = Y3 * np.cos(t) + X3 * np.sin(t)
+            W = Z3 * np.sin(t)
+        else:
+            U = -Y3 * np.cos(t)
+            V = X3 * np.sin(t)
+            W = np.sin(np.sqrt(X3**2 + Y3**2))
+        frames.append(go.Frame(data=[go.Cone(
+            x=X3.flatten(), y=Y3.flatten(), z=Z3.flatten(),
+            u=U.flatten(), v=V.flatten(), w=W.flatten(),
+            colorscale="Viridis", sizemode="absolute", sizeref=0.5, showscale=False
+        )], name=f"t={t:.2f}"))
+
+    fig3 = go.Figure(
+        data=frames[0].data,
+        layout=go.Layout(
+            scene=dict(xaxis=dict(range=[-2,2]), yaxis=dict(range=[-2,2]), zaxis=dict(range=[-2,2]), aspectmode="cube"),
+            updatemenus=[dict(
+                type="buttons",
+                showactive=False,
+                buttons=[dict(label="▶️ Play",
+                              method="animate",
+                              args=[None, {"frame": {"duration":100, "redraw": True}, "fromcurrent": True}])])]
+        ),
+        frames=frames
+    )
+    st.plotly_chart(fig3, use_container_width=True)
+
+# -------------------------------
+# Theory & Math
+# -------------------------------
 st.markdown("---")
+st.header("📘 Theory Behind the Simulation")
 st.markdown("""
-<div style='text-align: center; color: gray;'>
-    <p>🌍 Weather Simulation Lab | Exploring Vector Calculus & Fluid Dynamics in Atmospheric Science</p>
-    <p>Built with Streamlit • Visualizations powered by Matplotlib & Plotly</p>
-</div>
-""", unsafe_allow_html=True)
+Numerical Weather Prediction (NWP) models use **gradient, divergence, and curl** to compute air motion:
+
+- **Gradient (∇P):** Drives air from high → low pressure (wind formation)  
+- **Divergence (∇·V):** Air spreading/converging; identifies cloud formation & rainfall  
+- **Curl (∇×V):** Measures vorticity; forecasts cyclones, tornadoes, and rotational systems
+""")
+
+st.subheader("Mathematical Formulas in NWP")
+if field_mode == "Gradient (Pressure Field)":
+    st.latex(r"\vec{F} = -\frac{1}{\rho} \nabla P")
+elif field_mode == "Divergence (Air Outflow/Inflow)":
+    st.latex(r"\nabla \cdot \vec{V} = \frac{\partial U}{\partial x} + \frac{\partial V}{\partial y} + \frac{\partial W}{\partial z}")
+else:
+    st.latex(r"\nabla \times \vec{V} = \text{Curl}(\vec{V})")
+
+st.markdown("""
+These operators are calculated at **every grid point** in NWP simulations, which then predict:
+- Wind patterns  
+- Cloud formation & precipitation  
+- Cyclones & storms  
+- Overall weather system evolution
+""")
+st.info("💡 Switch between 2D, 3D, and Particle Animation to connect mathematical concepts with real-world weather predictions.")
