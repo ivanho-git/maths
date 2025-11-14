@@ -670,7 +670,7 @@ with edu_tab1:
         ### The Butterfly Effect & Predictability Limits
         
         #### 🦋 Edward Lorenz's Discovery (1961)
-        - Tiny changes in initial conditions → Huge changes in forecasts
+        - Tiny changes in initial conditions lead to huge changes in forecasts
         - Famous quote: *"A butterfly flapping wings in Brazil can cause a tornado in Texas"*
         
         #### 📉 Forecast Accuracy Decay
