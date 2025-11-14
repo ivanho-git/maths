@@ -44,7 +44,8 @@ with tab1:
         elif field_mode == "Divergence (Air Outflow/Inflow)":
             # Create clear radial divergence/convergence pattern
             # Pulsating flow: expands outward then contracts inward
-            pulse = np.sin(t) * 0.8 + 0.2  # Oscillates between 0.2 and 1.0
+            # Slow down the oscillation by dividing t by 2
+            pulse = np.sin(t / 2) * 0.8 + 0.2  # Oscillates between 0.2 and 1.0
             
             # Radial distance from center
             R = np.sqrt(X**2 + Y**2) + 0.1
@@ -104,19 +105,19 @@ with tab1:
                                      bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
             
             # Initialize rain drops (for divergence mode only)
-            num_raindrops = 80
+            num_raindrops = 100
             rain_data['x'] = np.random.uniform(-2, 2, num_raindrops)
             rain_data['y'] = np.random.uniform(0.5, 2, num_raindrops)
-            rain_data['velocities'] = np.random.uniform(0.08, 0.15, num_raindrops)
-            rain_scatter = ax.scatter(rain_data['x'], rain_data['y'], c='blue', s=30, alpha=0, marker='|', linewidths=3)
+            rain_data['velocities'] = np.random.uniform(0.05, 0.10, num_raindrops)
+            rain_scatter = ax.scatter(rain_data['x'], rain_data['y'], c='blue', s=40, alpha=0, marker='|', linewidths=3)
             
             # Initialize clouds (gray circles)
-            num_clouds = 12
+            num_clouds = 15
             cloud_circles = []
             for i in range(num_clouds):
                 cx = np.random.uniform(-1.8, 1.8)
-                cy = np.random.uniform(1.3, 1.9)
-                radius = np.random.uniform(0.15, 0.3)
+                cy = np.random.uniform(1.2, 1.9)
+                radius = np.random.uniform(0.18, 0.35)
                 cloud = plt.Circle((cx, cy), radius, color='gray', alpha=0, zorder=10)
                 ax.add_patch(cloud)
                 cloud_circles.append(cloud)
@@ -131,7 +132,7 @@ with tab1:
             
             # Update annotation for divergence
             if field_mode == "Divergence (Air Outflow/Inflow)":
-                pulse = np.sin(t) * 0.8 + 0.2
+                pulse = np.sin(t / 2) * 0.8 + 0.2  # Slowed down oscillation
                 
                 if pulse > 0.5:
                     # DIVERGENCE - Clear skies
@@ -149,9 +150,9 @@ with tab1:
                     
                     # Show clouds
                     for cloud in cloud_circles:
-                        cloud.set_alpha(0.7)
+                        cloud.set_alpha(0.75)
                     
-                    # Animate rain falling
+                    # Animate rain falling (slower)
                     rain_data['y'] -= rain_data['velocities']
                     
                     # Reset raindrops that fall below bottom
@@ -161,17 +162,17 @@ with tab1:
                     
                     # Update rain positions
                     rain_scatter.set_offsets(np.c_[rain_data['x'], rain_data['y']])
-                    rain_scatter.set_alpha(0.6)
+                    rain_scatter.set_alpha(0.7)
                 
                 text_annotation.set_text(state)
                 text_annotation.set_bbox(dict(boxstyle='round', facecolor=color, alpha=0.9))
             
             return quiver,
 
-        ani = animation.FuncAnimation(fig, update, frames=80, interval=80, blit=False)
+        ani = animation.FuncAnimation(fig, update, frames=120, interval=100, blit=False)
         
         with tempfile.NamedTemporaryFile(suffix=".gif", delete=False) as tmpfile:
-            ani.save(tmpfile.name, writer=PillowWriter(fps=25))
+            ani.save(tmpfile.name, writer=PillowWriter(fps=20))
             tmpfile.seek(0)
             gif_bytes = tmpfile.read()
 
