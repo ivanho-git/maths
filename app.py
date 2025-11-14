@@ -8,58 +8,113 @@ import pandas as pd
 st.set_page_config(page_title="Navier-Stokes Weather Predictor", layout="wide")
 
 # Title and introduction
-st.title("🌦️ Simplified Weather Prediction using Navier-Stokes Equations")
+st.title("🌦️ Complete Weather Prediction using Navier-Stokes & Coupled Equations")
 
 st.markdown("""
 ### About This Application
-This educational tool demonstrates how the **Navier-Stokes equations** form the foundation of weather prediction models.
-The Navier-Stokes equations describe the motion of viscous fluids (including air in our atmosphere) and are fundamental
-to computational fluid dynamics and numerical weather prediction.
+This educational tool demonstrates how **four fundamental equations** work together to predict weather:
+1. **Navier-Stokes** (momentum/wind)
+2. **Continuity** (mass conservation)
+3. **Thermodynamic Energy** (temperature)
+4. **Moisture Transport** (humidity/precipitation)
 
 **⚠️ Important:** This is a simplified educational model. Real weather forecasting uses complex numerical models
-with thousands of variables, satellite data, and supercomputers. This app demonstrates the core concepts only.
+with thousands of variables, satellite data, and supercomputers.
 """)
 
-# Display Navier-Stokes Equations
+# Display ALL 4 Fundamental Equations
 st.markdown("---")
-st.subheader("📐 The Navier-Stokes Equations")
+st.subheader("📐 The Four Coupled Equations of Weather Prediction")
 
-col1, col2 = st.columns([2, 1])
+# Create tabs for each equation
+eq_tab1, eq_tab2, eq_tab3, eq_tab4 = st.tabs([
+    "1️⃣ Momentum (Navier-Stokes)", 
+    "2️⃣ Continuity", 
+    "3️⃣ Thermodynamic Energy", 
+    "4️⃣ Moisture Transport"
+])
 
-with col1:
+with eq_tab1:
+    st.markdown("### Navier-Stokes Momentum Equation")
+    st.latex(r"\rho\left(\frac{\partial\mathbf{u}}{\partial t} + (\mathbf{u}\cdot\nabla)\mathbf{u}\right) = -\nabla p + \mu\nabla^2 \mathbf{u} + \mathbf{f}")
     st.markdown("""
-    The **incompressible Navier-Stokes equations** in vector form:
+    **What it does:** Predicts how **wind velocity** changes over time
     
-    **Momentum Equation:**
-    """)
-    st.latex(r"\rho \left(\frac{\partial \mathbf{u}}{\partial t} + (\mathbf{u} \cdot \nabla)\mathbf{u}\right) = -\nabla P + \mu \nabla^2 \mathbf{u} + \mathbf{f}")
+    **Physical meaning:**
+    - Left side: Rate of change of momentum (acceleration)
+    - Right side: Forces acting on air parcels
+        - **-∇p**: Pressure gradient force (high → low pressure)
+        - **μ∇²u**: Viscous friction (usually small in atmosphere)
+        - **f**: External forces (gravity, Coriolis effect)
     
-    st.markdown("**Continuity Equation (Conservation of Mass):**")
-    st.latex(r"\nabla \cdot \mathbf{u} = 0")
-    
-    st.markdown("""
-    Where:
-    - **ρ** = air density (kg/m³)
-    - **u** = velocity field (m/s)
-    - **P** = pressure (Pa)
-    - **μ** = dynamic viscosity (Pa·s)
-    - **f** = external forces (e.g., gravity, Coriolis)
-    - **t** = time
+    **Weather impact:** Determines wind speed and direction
     """)
 
-with col2:
-    st.info("""
-    **Key Components:**
-    - **Convection term**: (u·∇)u
-    - **Pressure gradient**: -∇P
-    - **Viscous term**: μ∇²u
-    - **External forces**: f
+with eq_tab2:
+    st.markdown("### Continuity Equation (Mass Conservation)")
+    st.latex(r"\nabla\cdot\mathbf{u} = 0 \quad \text{(incompressible)}")
+    st.latex(r"\frac{\partial \rho}{\partial t} + \nabla\cdot(\rho\mathbf{u}) = 0 \quad \text{(compressible)}")
+    st.markdown("""
+    **What it does:** Ensures **air mass is conserved** - air can't appear or disappear
     
-    These equations are coupled with:
-    - Thermodynamic equations
-    - Moisture equations
-    - Radiation models
+    **Physical meaning:**
+    - Divergence (∇·u > 0): Air spreading out → sinking motion
+    - Convergence (∇·u < 0): Air coming together → rising motion
+    
+    **Weather impact:** 
+    - Convergence → Air rises → Cooling → Clouds & Rain ☁️🌧️
+    - Divergence → Air sinks → Warming → Clear skies ☀️
     """)
+
+with eq_tab3:
+    st.markdown("### Thermodynamic Energy Equation")
+    st.latex(r"\frac{\partial \theta}{\partial t} + (\mathbf{u}\cdot\nabla)\theta = \frac{Q}{c_p}")
+    st.markdown("""
+    **What it does:** Predicts how **temperature** (or potential temperature θ) changes
+    
+    **Physical meaning:**
+    - Left side: Temperature change following air motion
+    - Right side: Heat sources/sinks
+        - **Q**: Diabatic heating (solar radiation, latent heat from condensation)
+        - **c_p**: Specific heat at constant pressure
+    
+    **Weather impact:** 
+    - Solar heating → warm air rises → convection
+    - Latent heat release → powers thunderstorms
+    - Radiative cooling → nighttime temperature drops
+    """)
+
+with eq_tab4:
+    st.markdown("### Moisture Transport Equation")
+    st.latex(r"\frac{\partial q}{\partial t} + (\mathbf{u}\cdot\nabla)q = S(q)")
+    st.markdown("""
+    **What it does:** Tracks **water vapor** (humidity) and predicts precipitation
+    
+    **Physical meaning:**
+    - **q**: Specific humidity (kg water / kg air)
+    - **S(q)**: Source/sink terms
+        - Evaporation from surface (+)
+        - Condensation to clouds/rain (-)
+        - Precipitation removal
+    
+    **Weather impact:** 
+    - High q + rising air → clouds form
+    - Condensation → releases latent heat → strengthens storms
+    - Essential for predicting rain, snow, fog
+    """)
+
+st.markdown("---")
+st.info("""
+🧠 **Why You Need ALL 4 Equations:**
+
+Weather is a coupled system. Each equation depends on the others:
+- **Wind** (Navier-Stokes) transports heat and moisture
+- **Temperature** affects air density and pressure
+- **Moisture** releases latent heat, affecting temperature and pressure
+- **Mass conservation** links wind divergence to vertical motion and precipitation
+
+**Leaving out any one equation breaks the ability to predict weather!** ⚠️
+""")
 
 st.markdown("---")
 
@@ -67,62 +122,75 @@ st.markdown("---")
 st.sidebar.header("🎛️ Input Parameters")
 st.sidebar.markdown("Adjust the atmospheric conditions below:")
 
-# Create two columns for better organization
-col_left, col_right = st.sidebar.columns(2)
+# Atmospheric state variables
+st.sidebar.subheader("Initial Atmospheric State")
 
-with col_left:
-    rho = st.sidebar.number_input("Air Density ρ (kg/m³)", 
-                                   min_value=0.5, max_value=2.0, value=1.225, step=0.01,
-                                   help="Standard air density at sea level is ~1.225 kg/m³")
-    
-    mu = st.sidebar.number_input("Dynamic Viscosity μ (×10⁻⁵ Pa·s)", 
-                                  min_value=1.0, max_value=3.0, value=1.81, step=0.01,
-                                  help="Air viscosity at 15°C is ~1.81×10⁻⁵ Pa·s") * 1e-5
-    
-    pressure = st.sidebar.number_input("Pressure P (hPa)", 
-                                        min_value=950.0, max_value=1050.0, value=1013.25, step=0.5,
-                                        help="Standard atmospheric pressure is 1013.25 hPa")
+rho = st.sidebar.number_input("Air Density ρ (kg/m³)", 
+                               min_value=0.5, max_value=2.0, value=1.225, step=0.01,
+                               help="Standard air density at sea level is ~1.225 kg/m³")
 
-with col_right:
-    temperature = st.sidebar.number_input("Temperature T (°C)", 
-                                          min_value=-30.0, max_value=50.0, value=15.0, step=0.5)
-    
-    humidity = st.sidebar.slider("Humidity (%)", 
-                                  min_value=0, max_value=100, value=60,
-                                  help="Relative humidity percentage")
+mu = st.sidebar.number_input("Dynamic Viscosity μ (×10⁻⁵ Pa·s)", 
+                              min_value=1.0, max_value=3.0, value=1.81, step=0.01,
+                              help="Air viscosity at 15°C is ~1.81×10⁻⁵ Pa·s") * 1e-5
+
+pressure = st.sidebar.number_input("Pressure P (hPa)", 
+                                    min_value=950.0, max_value=1050.0, value=1013.25, step=0.5,
+                                    help="Standard atmospheric pressure is 1013.25 hPa")
+
+temperature = st.sidebar.number_input("Temperature T (°C)", 
+                                      min_value=-30.0, max_value=50.0, value=15.0, step=0.5)
+
+humidity = st.sidebar.slider("Relative Humidity (%)", 
+                              min_value=0, max_value=100, value=60,
+                              help="Relative humidity percentage")
+
+# Convert relative humidity to specific humidity (simplified)
+# q ≈ 0.622 * e / (P - e), where e is vapor pressure
+# Simplified: q increases with RH and temp
+specific_humidity = (humidity / 100) * 0.015 * np.exp(temperature / 20)  # kg/kg
 
 st.sidebar.markdown("---")
 st.sidebar.subheader("Wind Velocity Components")
 
 u_wind = st.sidebar.number_input("u-component (East-West, m/s)", 
                                   min_value=-30.0, max_value=30.0, value=5.0, step=0.5,
-                                  help="Positive = eastward, negative = westward")
+                                  help="Positive = eastward")
 
 v_wind = st.sidebar.number_input("v-component (North-South, m/s)", 
                                   min_value=-30.0, max_value=30.0, value=3.0, step=0.5,
-                                  help="Positive = northward, negative = southward")
+                                  help="Positive = northward")
+
+w_wind = st.sidebar.number_input("w-component (Vertical, m/s)", 
+                                  min_value=-5.0, max_value=5.0, value=0.0, step=0.1,
+                                  help="Positive = upward (convergence)")
+
+st.sidebar.markdown("---")
+st.sidebar.subheader("Forcing & Sources")
+
+solar_heating = st.sidebar.slider("Solar Heating (W/m²)", 
+                                   min_value=0, max_value=1000, value=200,
+                                   help="Solar radiation heating rate")
+
+evaporation_rate = st.sidebar.slider("Surface Evaporation (mm/day)", 
+                                      min_value=0.0, max_value=10.0, value=3.0, step=0.5,
+                                      help="Water evaporation from surface")
 
 # Time step for prediction
-st.sidebar.markdown("---")
 time_hours = st.sidebar.slider("Prediction Time Horizon (hours)", 
                                 min_value=1, max_value=12, value=3)
-
-# Example values button
-if st.sidebar.button("📋 Load Example Values"):
-    st.sidebar.success("Example values loaded! (Refresh to see changes)")
 
 st.sidebar.markdown("---")
 st.sidebar.markdown("""
 ### 💡 Tips:
-- **Low pressure** + **high humidity** → Rain likely
-- **High wind speeds** → Storm conditions
-- **Temperature** affects air density
-- **Pressure changes** indicate weather fronts
+- **Positive w** (upward) → Convergence → Clouds/Rain
+- **High solar heating** → Convection → Storms
+- **High evaporation** → More moisture → Rain
+- **Low pressure** + **high humidity** → Storms
 """)
 
 # Main computation
 st.markdown("---")
-st.header("📊 Prediction Results")
+st.header("📊 Prediction Results from Coupled Equations")
 
 # Calculate derived quantities
 wind_speed = np.sqrt(u_wind**2 + v_wind**2)
@@ -130,103 +198,216 @@ wind_direction_deg = np.degrees(np.arctan2(v_wind, u_wind))
 if wind_direction_deg < 0:
     wind_direction_deg += 360
 
-# Direction name
 def get_direction_name(deg):
     directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW']
     idx = int((deg + 22.5) // 45) % 8
     return directions[idx]
 
-# Simplified physics-based predictions
-# These are educational approximations
+# =======================
+# SOLVE THE 4 EQUATIONS
+# =======================
 
-# 1. Pressure evolution (using simplified continuity and ideal gas law)
-# Pressure tendency affected by wind divergence and temperature
-divergence = np.random.uniform(-0.5, 0.5)  # Simplified divergence approximation
-pressure_change = -divergence * pressure * 0.1 * time_hours
+dt = time_hours * 3600  # Convert to seconds
+L = 100000  # Characteristic length scale (100 km)
+
+# 1. CONTINUITY EQUATION - Calculate divergence
+divergence = (u_wind + v_wind) / L + w_wind / 5000  # Simplified divergence
+# Positive divergence → air spreading (sinking)
+# Negative divergence → air converging (rising)
+
+# 2. NAVIER-STOKES - Wind evolution
+# Pressure gradient force (simplified)
+pressure_gradient_x = -(pressure - 1013.25) * 100 / (rho * L)  # m/s²
+pressure_gradient_y = -(pressure - 1013.25) * 50 / (rho * L)
+
+# Viscous damping (very small in atmosphere)
+viscous_term = -mu * wind_speed / (rho * L**2)
+
+# Coriolis force (f = 2Ω sin(φ), Ω = 7.3e-5 rad/s, φ = 45°)
+coriolis_f = 1e-4  # rad/s at mid-latitudes
+coriolis_u = coriolis_f * v_wind
+coriolis_v = -coriolis_f * u_wind
+
+# Update wind components
+du_dt = pressure_gradient_x + coriolis_u + viscous_term
+dv_dt = pressure_gradient_y + coriolis_v + viscous_term
+dw_dt = -divergence * 0.1  # Vertical motion from continuity
+
+u_future = u_wind + du_dt * dt
+v_future = v_wind + dv_dt * dt
+w_future = w_wind + dw_dt * dt
+
+# 3. THERMODYNAMIC ENERGY EQUATION - Temperature evolution
+cp = 1005  # Specific heat of air (J/kg/K)
+
+# Diabatic heating from solar radiation
+Q_solar = solar_heating / rho  # W/m² → J/(kg·s)
+
+# Latent heat release from condensation (if rising air and high humidity)
+latent_heat = 2.5e6  # J/kg (latent heat of vaporization)
+if w_future > 0 and specific_humidity > 0.008:  # Rising air + moisture
+    condensation_rate = specific_humidity * 0.3 * (w_future / 5.0)  # kg/kg/s
+    Q_latent = latent_heat * condensation_rate
+else:
+    condensation_rate = 0
+    Q_latent = 0
+
+# Adiabatic cooling/warming from vertical motion
+adiabatic_rate = 9.8 / 1000  # °C per meter (dry adiabatic lapse rate)
+Q_adiabatic = -w_future * adiabatic_rate
+
+# Temperature advection (simplified)
+T_advection = -(u_wind * 0.001 + v_wind * 0.001) * dt / 3600
+
+# Total temperature change
+dT_dt = (Q_solar + Q_latent) / cp + Q_adiabatic
+future_temperature = temperature + dT_dt * dt / 3600 + T_advection
+
+# 4. MOISTURE EQUATION - Humidity evolution
+# Evaporation source
+evap_source = evaporation_rate / 1000 / 86400  # mm/day → kg/m²/s
+dq_evap = evap_source / (rho * 1000) * dt  # Simplified
+
+# Condensation sink (rain formation)
+if condensation_rate > 0:
+    dq_condensation = -condensation_rate * dt
+    precipitation_rate = -dq_condensation * rho * 1000 * 3600 / dt  # mm/hr
+else:
+    dq_condensation = 0
+    precipitation_rate = 0
+
+# Moisture advection (simplified)
+dq_advection = -(u_wind * specific_humidity * 0.00001 + 
+                 v_wind * specific_humidity * 0.00001) * dt
+
+future_specific_humidity = specific_humidity + dq_evap + dq_condensation + dq_advection
+future_specific_humidity = max(0, min(0.03, future_specific_humidity))  # Bounds
+
+# Convert back to relative humidity (simplified)
+future_humidity = (future_specific_humidity / (0.015 * np.exp(future_temperature / 20))) * 100
+future_humidity = max(0, min(100, future_humidity))
+
+# Pressure evolution from continuity + ideal gas law
+# P ∝ ρT, with mass conservation
+pressure_change = -divergence * pressure * 0.001 * dt / 3600  # Simplified
 future_pressure = pressure + pressure_change
 
-# 2. Temperature change (affected by pressure change and advection)
-# Adiabatic cooling/warming
-temp_pressure_effect = -pressure_change * 0.02
-temp_advection = -u_wind * 0.05 * time_hours  # Simplified advection
-future_temperature = temperature + temp_pressure_effect + temp_advection
-
-# 3. Wind velocity prediction (using simplified momentum equation)
-# Wind changes due to pressure gradients and viscous effects
-pressure_gradient = pressure_change / 1000  # Simplified gradient
-reynolds_number = (rho * wind_speed * 1000) / mu  # Characteristic length ~1km
-
-# Viscous damping (small for high Reynolds number)
-viscous_damping = 1 - (mu / (rho * wind_speed + 0.1)) * 0.01 * time_hours
-
-# Future wind components
-u_future = u_wind * viscous_damping + pressure_gradient * 0.5
-v_future = v_wind * viscous_damping + pressure_gradient * 0.3
-
+# Wind speed and direction
 future_wind_speed = np.sqrt(u_future**2 + v_future**2)
 future_wind_direction_deg = np.degrees(np.arctan2(v_future, u_future))
 if future_wind_direction_deg < 0:
     future_wind_direction_deg += 360
 
-# 4. Weather condition prediction
-def predict_weather(p, t, h, ws):
-    """Simplified weather classification"""
+# Weather classification based on ALL variables
+def predict_weather(p, t, h, ws, w_vert, precip):
+    """Advanced weather classification using all 4 equations"""
     score = 0
     
-    # Pressure factor
+    # Pressure (from continuity + state)
     if p < 1000:
         score += 3
     elif p < 1010:
         score += 1
     
-    # Humidity factor
-    if h > 80:
+    # Humidity (from moisture equation)
+    if h > 85:
         score += 3
-    elif h > 60:
-        score += 1
-    
-    # Temperature factor (extreme temps)
-    if t < 0 or t > 35:
-        score += 1
-    
-    # Wind speed factor
-    if ws > 15:
+    elif h > 70:
         score += 2
-    elif ws > 10:
+    elif h > 50:
         score += 1
     
-    if score >= 6:
-        return "⛈️ Stormy/Heavy Rain"
-    elif score >= 4:
-        return "🌧️ Rainy"
-    elif score >= 2:
+    # Vertical motion (from continuity)
+    if w_vert > 1.0:  # Strong updraft
+        score += 4
+    elif w_vert > 0.2:
+        score += 2
+    
+    # Precipitation (from moisture equation)
+    if precip > 5:
+        score += 3
+    elif precip > 1:
+        score += 2
+    
+    # Wind speed (from Navier-Stokes)
+    if ws > 20:
+        score += 3
+    elif ws > 12:
+        score += 2
+    elif ws > 8:
+        score += 1
+    
+    # Temperature extremes (from thermodynamic equation)
+    if t < -10 or t > 38:
+        score += 1
+    
+    # Classification
+    if score >= 10:
+        return "⛈️ Severe Thunderstorms"
+    elif score >= 7:
+        return "🌧️ Heavy Rain/Storms"
+    elif score >= 5:
+        return "🌦️ Showers/Light Rain"
+    elif score >= 3:
         return "☁️ Cloudy"
+    elif score >= 1:
+        return "⛅ Partly Cloudy"
     else:
         return "☀️ Clear"
 
-current_weather = predict_weather(pressure, temperature, humidity, wind_speed)
-future_weather = predict_weather(future_pressure, future_temperature, humidity, future_wind_speed)
+current_weather = predict_weather(pressure, temperature, humidity, wind_speed, w_wind, 0)
+future_weather = predict_weather(future_pressure, future_temperature, future_humidity, 
+                                 future_wind_speed, w_future, precipitation_rate)
 
-# Display results in columns
-col1, col2, col3 = st.columns(3)
+# Display results
+st.subheader("🔄 Results from Each Equation")
+
+col1, col2, col3, col4 = st.columns(4)
 
 with col1:
-    st.metric("Current Wind Speed", f"{wind_speed:.1f} m/s", 
+    st.markdown("### 1️⃣ Momentum (N-S)")
+    st.metric("Wind Speed", f"{wind_speed:.1f} m/s", 
               delta=f"{future_wind_speed - wind_speed:+.1f} m/s")
-    st.metric("Current Wind Direction", 
-              f"{wind_direction_deg:.0f}° ({get_direction_name(wind_direction_deg)})",
+    st.metric("Wind Direction", 
+              f"{get_direction_name(wind_direction_deg)}",
               delta=f"{future_wind_direction_deg - wind_direction_deg:+.0f}°")
+    st.caption(f"u: {u_wind:.1f}→{u_future:.1f} m/s")
+    st.caption(f"v: {v_wind:.1f}→{v_future:.1f} m/s")
 
 with col2:
-    st.metric("Current Pressure", f"{pressure:.1f} hPa", 
-              delta=f"{pressure_change:+.1f} hPa")
-    st.metric("Current Temperature", f"{temperature:.1f}°C", 
-              delta=f"{future_temperature - temperature:+.1f}°C")
+    st.markdown("### 2️⃣ Continuity")
+    st.metric("Divergence", f"{divergence*1e5:.2f}×10⁻⁵ s⁻¹")
+    st.metric("Vertical Motion", f"{w_wind:.2f} m/s",
+              delta=f"{w_future - w_wind:+.2f} m/s")
+    if divergence > 0:
+        st.caption("🔻 Divergence → Sinking")
+    else:
+        st.caption("🔺 Convergence → Rising")
+    st.caption("(Mass conserved)")
 
 with col3:
-    st.metric("Current Humidity", f"{humidity}%")
-    st.metric("Reynolds Number", f"{reynolds_number:.0f}",
-              help="High Re indicates turbulent flow")
+    st.markdown("### 3️⃣ Thermodynamics")
+    st.metric("Temperature", f"{temperature:.1f}°C", 
+              delta=f"{future_temperature - temperature:+.1f}°C")
+    st.metric("Heating Rate", f"{(Q_solar + Q_latent)/cp*3600:.1f} °C/hr")
+    st.caption(f"Solar: {Q_solar/cp*3600:.1f} °C/hr")
+    st.caption(f"Latent: {Q_latent/cp*3600:.1f} °C/hr")
+
+with col4:
+    st.markdown("### 4️⃣ Moisture")
+    st.metric("Humidity", f"{humidity:.0f}%", 
+              delta=f"{future_humidity - humidity:+.0f}%")
+    st.metric("Precipitation", f"{precipitation_rate:.2f} mm/hr")
+    st.caption(f"q: {specific_humidity*1000:.2f}→{future_specific_humidity*1000:.2f} g/kg")
+    if precipitation_rate > 0.5:
+        st.caption("🌧️ Rain forming!")
+
+# Pressure (coupling all equations)
+st.markdown("---")
+col1, col2 = st.columns(2)
+with col1:
+    st.metric("Pressure (from all eqs)", f"{pressure:.1f} hPa", 
+              delta=f"{pressure_change:+.1f} hPa")
 
 # Weather condition display
 st.markdown("---")
@@ -235,173 +416,484 @@ col1, col2 = st.columns(2)
 with col1:
     st.subheader("Current Condition")
     st.markdown(f"## {current_weather}")
+    st.caption(f"Based on coupled equation analysis")
 
 with col2:
     st.subheader(f"Predicted ({time_hours}h)")
     st.markdown(f"## {future_weather}")
+    if precipitation_rate > 1:
+        st.caption(f"💧 Expect {precipitation_rate:.1f} mm/hr rain")
 
-# Prediction summary
+# Detailed prediction
 st.markdown("---")
-st.subheader("📝 Detailed Prediction Summary")
+st.subheader("📝 Detailed Prediction from Coupled System")
 
-trend = "decreasing" if pressure_change < 0 else "increasing"
+trend = "falling" if pressure_change < 0 else "rising"
 temp_trend = "cooling" if future_temperature < temperature else "warming"
 wind_change = "strengthening" if future_wind_speed > wind_speed else "weakening"
+moisture_trend = "increasing" if future_humidity > humidity else "decreasing"
+
+if w_future > 0:
+    vertical_desc = f"Rising at {w_future:.2f} m/s (convergence → clouds forming)"
+elif w_future < 0:
+    vertical_desc = f"Sinking at {abs(w_future):.2f} m/s (divergence → clear skies)"
+else:
+    vertical_desc = "Minimal vertical motion"
 
 summary = f"""
-Based on the current atmospheric conditions and simplified Navier-Stokes dynamics:
+**🌍 Coupled System Analysis** (All 4 Equations Working Together):
 
 **Current State:** {current_weather} with winds from {get_direction_name(wind_direction_deg)} at {wind_speed:.1f} m/s.
 
-**Predicted Evolution (next {time_hours} hours):**
-- **Pressure**: {trend.capitalize()} from {pressure:.1f} to {future_pressure:.1f} hPa (Δ{pressure_change:+.1f} hPa)
-- **Temperature**: {temp_trend.capitalize()} from {temperature:.1f}°C to {future_temperature:.1f}°C
-- **Wind**: {wind_change.capitalize()} to {future_wind_speed:.1f} m/s from {get_direction_name(future_wind_direction_deg)}
-- **Weather Condition**: Transitioning to **{future_weather}**
+**Equation-by-Equation Prediction (next {time_hours} hours):**
 
-**Physical Interpretation:**
-- The pressure {trend} indicates {'divergence (rising air)' if pressure_change < 0 else 'convergence (sinking air)'}.
-- Reynolds number of {reynolds_number:.0f} suggests {'turbulent' if reynolds_number > 4000 else 'transitional'} flow regime.
-- High humidity ({humidity}%) combined with {trend} pressure increases precipitation likelihood.
+1️⃣ **Navier-Stokes (Momentum):** 
+   - Wind {wind_change} from {wind_speed:.1f} to {future_wind_speed:.1f} m/s
+   - Direction: {get_direction_name(wind_direction_deg)} → {get_direction_name(future_wind_direction_deg)}
+   - Pressure gradient and Coriolis forces driving wind changes
+
+2️⃣ **Continuity (Mass Conservation):**
+   - Divergence: {divergence*1e5:.2f}×10⁻⁵ s⁻¹ ({'positive (diverging)' if divergence > 0 else 'negative (converging)'})
+   - Vertical motion: {vertical_desc}
+   - This {'suppresses' if divergence > 0 else 'triggers'} cloud formation
+
+3️⃣ **Thermodynamic Energy:**
+   - Temperature {temp_trend} from {temperature:.1f}°C to {future_temperature:.1f}°C
+   - Solar heating: {Q_solar/cp*3600:.1f} °C/hr
+   - Latent heat {'release' if Q_latent > 0 else 'none'}: {Q_latent/cp*3600:.1f} °C/hr
+   - {'Convection active' if future_temperature > temperature + 2 else 'Stable atmosphere'}
+
+4️⃣ **Moisture Transport:**
+   - Humidity {moisture_trend} from {humidity:.0f}% to {future_humidity:.0f}%
+   - Specific humidity: {specific_humidity*1000:.2f} → {future_specific_humidity*1000:.2f} g/kg
+   - Precipitation: {precipitation_rate:.2f} mm/hr {'(rain expected!)' if precipitation_rate > 0.5 else '(no rain)'}
+   - Evaporation adding {evaporation_rate:.1f} mm/day moisture
+
+**🔗 Coupled Effects:**
+- Pressure {trend} to {future_pressure:.1f} hPa (linked to temperature and divergence)
+- {'Moisture condensation releasing latent heat → strengthening updrafts → more rain (positive feedback!)' if precipitation_rate > 1 else 'Stable conditions with minimal coupling effects'}
+
+**Final Forecast:** {future_weather}
 """
 
 st.info(summary)
 
 # Visualizations
 st.markdown("---")
-st.subheader("📈 Visual Analysis")
+st.subheader("📈 Visual Analysis: All 4 Equations")
 
-# Create plots
-fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+fig, axes = plt.subplots(2, 2, figsize=(14, 10))
 
-# Plot 1: Wind vector field
-ax1 = axes[0]
-x = np.linspace(0, 10, 6)
-y = np.linspace(0, 10, 6)
+# Plot 1: Wind field (from Navier-Stokes)
+ax1 = axes[0, 0]
+x = np.linspace(0, 10, 8)
+y = np.linspace(0, 10, 8)
 X, Y = np.meshgrid(x, y)
-
-# Current wind field (uniform for simplicity, with small perturbations)
-U_current = np.ones_like(X) * u_wind + np.random.uniform(-0.5, 0.5, X.shape)
-V_current = np.ones_like(Y) * v_wind + np.random.uniform(-0.5, 0.5, Y.shape)
-
-# Future wind field
-U_future = np.ones_like(X) * u_future + np.random.uniform(-0.5, 0.5, X.shape)
-V_future = np.ones_like(Y) * v_future + np.random.uniform(-0.5, 0.5, Y.shape)
-
-# Plot current wind
-ax1.quiver(X, Y, U_current, V_current, alpha=0.6, color='blue', label='Current', scale=100)
-ax1.quiver(X, Y, U_future, V_future, alpha=0.6, color='red', label=f'Predicted ({time_hours}h)', scale=100)
-ax1.set_xlabel('X Position (arbitrary units)')
-ax1.set_ylabel('Y Position (arbitrary units)')
-ax1.set_title('Wind Velocity Field Evolution')
+U_current = np.ones_like(X) * u_wind + np.random.uniform(-0.3, 0.3, X.shape)
+V_current = np.ones_like(Y) * v_wind + np.random.uniform(-0.3, 0.3, Y.shape)
+U_future = np.ones_like(X) * u_future + np.random.uniform(-0.3, 0.3, X.shape)
+V_future = np.ones_like(Y) * v_future + np.random.uniform(-0.3, 0.3, Y.shape)
+ax1.quiver(X, Y, U_current, V_current, alpha=0.6, color='blue', label='Current', scale=80)
+ax1.quiver(X, Y, U_future, V_future, alpha=0.6, color='red', label=f'{time_hours}h', scale=80)
+ax1.set_title('1. Navier-Stokes: Wind Evolution', fontweight='bold')
 ax1.legend()
 ax1.grid(True, alpha=0.3)
 ax1.set_aspect('equal')
 
-# Plot 2: Pressure contour
-ax2 = axes[1]
+# Plot 2: Divergence field (from Continuity)
+ax2 = axes[0, 1]
 x_fine = np.linspace(0, 10, 50)
 y_fine = np.linspace(0, 10, 50)
 X_fine, Y_fine = np.meshgrid(x_fine, y_fine)
-
-# Create synthetic pressure field with gradient
-P_field = pressure - (X_fine - 5) * pressure_change/10 + np.random.uniform(-2, 2, X_fine.shape)
-
-contour = ax2.contourf(X_fine, Y_fine, P_field, levels=15, cmap='RdYlBu_r', alpha=0.8)
-ax2.contour(X_fine, Y_fine, P_field, levels=15, colors='black', alpha=0.3, linewidths=0.5)
-plt.colorbar(contour, ax=ax2, label='Pressure (hPa)')
-ax2.set_xlabel('X Position (arbitrary units)')
-ax2.set_ylabel('Y Position (arbitrary units)')
-ax2.set_title(f'Pressure Field (Current: {pressure:.1f} hPa)')
+# Create synthetic divergence field
+div_field = divergence * 1e5 * (1 + 0.3 * np.sin(X_fine) * np.cos(Y_fine))
+contour2 = ax2.contourf(X_fine, Y_fine, div_field, levels=15, cmap='RdBu_r', alpha=0.8)
+plt.colorbar(contour2, ax=ax2, label='Divergence (×10⁻⁵ s⁻¹)')
+ax2.set_title('2. Continuity: Divergence Field', fontweight='bold')
 ax2.set_aspect('equal')
+if divergence < 0:
+    ax2.text(5, 9, '⬆️ Convergence\n(Rising Air)', ha='center', 
+             bbox=dict(boxstyle='round', facecolor='lightblue', alpha=0.8))
+else:
+    ax2.text(5, 9, '⬇️ Divergence\n(Sinking Air)', ha='center',
+             bbox=dict(boxstyle='round', facecolor='lightcoral', alpha=0.8))
+
+# Plot 3: Temperature field (from Thermodynamics)
+ax3 = axes[1, 0]
+T_field = temperature + (X_fine - 5) * (future_temperature - temperature) / 5 + np.random.uniform(-1, 1, X_fine.shape)
+contour3 = ax3.contourf(X_fine, Y_fine, T_field, levels=15, cmap='RdYlBu_r', alpha=0.8)
+plt.colorbar(contour3, ax=ax3, label='Temperature (°C)')
+ax3.set_title('3. Thermodynamics: Temperature Field', fontweight='bold')
+ax3.set_aspect('equal')
+if Q_latent > 1000:
+    ax3.text(5, 9, '🔥 Latent Heat\nRelease Active', ha='center',
+             bbox=dict(boxstyle='round', facecolor='orange', alpha=0.8))
+
+# Plot 4: Moisture field (from Moisture equation)
+ax4 = axes[1, 1]
+q_field = specific_humidity * 1000 + (X_fine - 5) * (future_specific_humidity - specific_humidity) * 1000 / 5
+q_field += np.random.uniform(-0.5, 0.5, X_fine.shape)
+contour4 = ax4.contourf(X_fine, Y_fine, q_field, levels=15, cmap='Blues', alpha=0.8)
+plt.colorbar(contour4, ax=ax4, label='Specific Humidity (g/kg)')
+ax4.set_title('4. Moisture: Humidity & Precipitation', fontweight='bold')
+ax4.set_aspect('equal')
+if precipitation_rate > 0.5:
+    # Add rain symbols
+    rain_x = np.random.uniform(1, 9, 20)
+    rain_y = np.random.uniform(1, 9, 20)
+    ax4.scatter(rain_x, rain_y, marker='|', s=100, c='blue', alpha=0.6, linewidths=2)
+    ax4.text(5, 9, f'🌧️ Rain\n{precipitation_rate:.1f} mm/hr', ha='center',
+             bbox=dict(boxstyle='round', facecolor='lightblue', alpha=0.9))
 
 plt.tight_layout()
 st.pyplot(fig)
 
-# Time evolution plot
+# Time evolution of all variables
 st.markdown("---")
-st.subheader("⏱️ Temporal Evolution")
+st.subheader("⏱️ Temporal Evolution: Coupled System Dynamics")
 
-fig2, axes2 = plt.subplots(1, 3, figsize=(15, 4))
-
-time_points = np.linspace(0, time_hours, 20)
-
-# Pressure evolution
-pressure_evolution = pressure + (pressure_change / time_hours) * time_points
-axes2[0].plot(time_points, pressure_evolution, 'b-', linewidth=2)
-axes2[0].axhline(y=1013.25, color='gray', linestyle='--', alpha=0.5, label='Standard Pressure')
-axes2[0].set_xlabel('Time (hours)')
-axes2[0].set_ylabel('Pressure (hPa)')
-axes2[0].set_title('Pressure Evolution')
-axes2[0].grid(True, alpha=0.3)
-axes2[0].legend()
-
-# Temperature evolution
-temp_evolution = temperature + ((future_temperature - temperature) / time_hours) * time_points
-axes2[1].plot(time_points, temp_evolution, 'r-', linewidth=2)
-axes2[1].set_xlabel('Time (hours)')
-axes2[1].set_ylabel('Temperature (°C)')
-axes2[1].set_title('Temperature Evolution')
-axes2[1].grid(True, alpha=0.3)
+fig2, axes2 = plt.subplots(2, 2, figsize=(14, 8))
+time_points = np.linspace(0, time_hours, 30)
 
 # Wind speed evolution
 wind_evolution = wind_speed + ((future_wind_speed - wind_speed) / time_hours) * time_points
-axes2[2].plot(time_points, wind_evolution, 'g-', linewidth=2)
-axes2[2].set_xlabel('Time (hours)')
-axes2[2].set_ylabel('Wind Speed (m/s)')
-axes2[2].set_title('Wind Speed Evolution')
-axes2[2].grid(True, alpha=0.3)
+axes2[0, 0].plot(time_points, wind_evolution, 'b-', linewidth=2, label='Wind Speed')
+axes2[0, 0].set_xlabel('Time (hours)')
+axes2[0, 0].set_ylabel('Wind Speed (m/s)')
+axes2[0, 0].set_title('Navier-Stokes: Wind Evolution')
+axes2[0, 0].grid(True, alpha=0.3)
+axes2[0, 0].legend()
+
+# Vertical velocity (from continuity)
+w_evolution = w_wind + ((w_future - w_wind) / time_hours) * time_points
+axes2[0, 1].plot(time_points, w_evolution, 'g-', linewidth=2, label='Vertical Velocity')
+axes2[0, 1].axhline(y=0, color='gray', linestyle='--', alpha=0.5)
+axes2[0, 1].fill_between(time_points, 0, w_evolution, where=(w_evolution > 0), 
+                         alpha=0.3, color='blue', label='Rising (Convergence)')
+axes2[0, 1].fill_between(time_points, 0, w_evolution, where=(w_evolution < 0),
+                         alpha=0.3, color='red', label='Sinking (Divergence)')
+axes2[0, 1].set_xlabel('Time (hours)')
+axes2[0, 1].set_ylabel('Vertical Velocity (m/s)')
+axes2[0, 1].set_title('Continuity: Vertical Motion')
+axes2[0, 1].grid(True, alpha=0.3)
+axes2[0, 1].legend(fontsize=8)
+
+# Temperature evolution
+temp_evolution = temperature + ((future_temperature - temperature) / time_hours) * time_points
+axes2[1, 0].plot(time_points, temp_evolution, 'r-', linewidth=2, label='Temperature')
+axes2[1, 0].set_xlabel('Time (hours)')
+axes2[1, 0].set_ylabel('Temperature (°C)')
+axes2[1, 0].set_title('Thermodynamics: Temperature Evolution')
+axes2[1, 0].grid(True, alpha=0.3)
+axes2[1, 0].legend()
+
+# Humidity and precipitation evolution
+humidity_evolution = humidity + ((future_humidity - humidity) / time_hours) * time_points
+precip_evolution = np.linspace(0, precipitation_rate, len(time_points))
+ax_hum = axes2[1, 1]
+ax_precip = ax_hum.twinx()
+ax_hum.plot(time_points, humidity_evolution, 'b-', linewidth=2, label='Humidity')
+ax_precip.bar(time_points, precip_evolution, width=time_hours/30, alpha=0.4, color='blue', label='Precipitation')
+ax_hum.set_xlabel('Time (hours)')
+ax_hum.set_ylabel('Humidity (%)', color='b')
+ax_precip.set_ylabel('Precipitation (mm/hr)', color='blue')
+ax_hum.set_title('Moisture: Humidity & Precipitation')
+ax_hum.tick_params(axis='y', labelcolor='b')
+ax_precip.tick_params(axis='y', labelcolor='blue')
+ax_hum.grid(True, alpha=0.3)
+lines1, labels1 = ax_hum.get_legend_handles_labels()
+lines2, labels2 = ax_precip.get_legend_handles_labels()
+ax_hum.legend(lines1 + lines2, labels1 + labels2, loc='upper left', fontsize=8)
 
 plt.tight_layout()
 st.pyplot(fig2)
 
 # Educational section
 st.markdown("---")
-st.subheader("🎓 How This Works: From Navier-Stokes to Weather")
+st.subheader("🎓 Understanding the Coupled System")
 
-with st.expander("Click to learn more about the physics"):
+with st.expander("🔗 How the 4 Equations Work Together"):
     st.markdown("""
-    ### The Physics Behind Weather Prediction
+    ### The Beautiful Coupling of Atmospheric Physics
     
-    **1. Navier-Stokes Equations:**
-    These fundamental equations describe how fluids (including air) move and are the basis of all weather models:
+    Weather prediction requires solving all 4 equations **simultaneously** because they are deeply interconnected:
     
-    - **Momentum Conservation**: How wind velocity changes due to pressure gradients, viscosity, and external forces
-    - **Mass Conservation**: The continuity equation ensures air mass is conserved
-    - **Energy Conservation**: Temperature changes via thermodynamic processes
+    #### 🔄 Key Coupling Mechanisms:
     
-    **2. Key Physical Processes:**
+    **1. Momentum ↔ Continuity:**
+    - Wind creates divergence/convergence (∇·u)
+    - Divergence drives vertical motion (w)
+    - Vertical motion feeds back into horizontal wind patterns
     
-    - **Pressure Gradients** (−∇P): High pressure pushes air toward low pressure, creating wind
-    - **Viscous Forces** (μ∇²u): Air friction slows down wind (usually negligible except near surfaces)
-    - **Advection** ((u·∇)u): Wind carries momentum, heat, and moisture
-    - **Coriolis Force**: Earth's rotation deflects moving air (not included in this simplified model)
+    **2. Continuity ↔ Moisture:**
+    - Rising air (convergence) → Cooling → Condensation → Clouds & Rain
+    - Falling air (divergence) → Warming → Evaporation → Clear skies
     
-    **3. What Real Models Do:**
+    **3. Moisture ↔ Thermodynamics:**
+    - Condensation releases **latent heat** (2.5 MJ/kg!)
+    - This heats the air → Creates buoyancy → Strengthens updrafts
+    - **Positive feedback loop** powers thunderstorms and hurricanes!
     
-    Real numerical weather prediction (NWP) systems like those at NOAA, ECMWF, and other agencies:
-    - Divide the atmosphere into millions of grid cells
-    - Solve coupled Navier-Stokes + thermodynamic equations at each point
-    - Incorporate satellite observations, radar data, and weather stations
-    - Use supercomputers running for hours to predict days ahead
-    - Include cloud physics, radiation, surface interactions, and more
+    **4. Thermodynamics ↔ Momentum:**
+    - Temperature gradients → Pressure gradients → Wind
+    - Wind transports heat → Changes temperature distribution
     
-    **4. This Educational Model:**
+    **5. ALL FOUR → Pressure:**
+    - Ideal gas law: P = ρRT (links pressure, density, temperature)
+    - Continuity ensures mass conservation
+    - Pressure gradients drive winds (Navier-Stokes)
+    - Temperature changes affect pressure (Thermodynamics)
     
-    This app uses **simplified approximations**:
-    - Linear extrapolations based on current conditions
-    - Simplified physics relationships
-    - Statistical weather classification
-    - Does NOT solve the full PDE system
+    #### 🌪️ Real-World Example: Thunderstorm Formation
     
-    **Purpose**: To demonstrate the core concepts and inspire interest in atmospheric physics!
+    1. **Solar heating** warms surface → air rises (Thermodynamics)
+    2. **Rising air** creates convergence at surface (Continuity)
+    3. **Convergence** draws in more air → strengthens updraft (Navier-Stokes)
+    4. **Rising air cools** → moisture condenses → clouds form (Moisture)
+    5. **Condensation releases latent heat** → air becomes more buoyant (Thermodynamics)
+    6. **Stronger updraft** pulls up more moisture → more rain (Coupled feedback!)
+    7. **Precipitation** cools the air → creates downdrafts → cycle continues
+    
+    This is why you **cannot** predict weather with just one equation!
     """)
+
+with st.expander("🖥️ How Real Weather Models Work"):
+    st.markdown("""
+    ### From Equations to Forecasts: The NWP Process
+    
+    **Modern Numerical Weather Prediction (NWP) systems:**
+    
+    #### 1. Spatial Discretization
+    - Divide atmosphere into **3D grid** (millions of cells)
+    - Horizontal resolution: 1-50 km
+    - Vertical levels: 50-137 layers (surface to ~50 km altitude)
+    
+    #### 2. Time Integration
+    - Solve all 4 equations at **every grid point**
+    - Time steps: seconds to minutes
+    - March forward in time: current → 1 hour → 2 hours → ... → 10 days
+    
+    #### 3. Additional Physics
+    Real models include much more:
+    - **Radiation**: Solar heating, infrared cooling
+    - **Cloud microphysics**: Ice, liquid, mixed-phase processes
+    - **Turbulence**: Boundary layer, subgrid-scale mixing
+    - **Surface**: Land/ocean interactions, vegetation
+    - **Gravity waves**: Mountain effects, atmospheric oscillations
+    
+    #### 4. Data Assimilation
+    - Combine observations with model forecasts
+    - Satellites, weather stations, aircraft, balloons
+    - Billions of observations daily!
+    - Kalman filters, variational methods (4D-Var)
+    
+    #### 5. Ensemble Forecasting
+    - Run model many times with slightly different initial conditions
+    - Quantify uncertainty
+    - Probability of rain: 70% = 7 out of 10 ensemble members predict rain
+    
+    #### 6. Supercomputing
+    - **NOAA's supercomputers**: 12+ petaflops (quadrillion calculations/second)
+    - **Runtime**: Hours to produce a 10-day forecast
+    - **Data**: Petabytes stored daily
+    
+    #### Major Global Models:
+    - **GFS** (USA): 13 km resolution, 16-day forecasts
+    - **ECMWF** (Europe): 9 km resolution, 10-day forecasts (most accurate!)
+    - **UKMO** (UK): Unified Model, 10 km global
+    - **JMA** (Japan): 13 km resolution
+    - **CMC** (Canada): 15 km resolution
+    """)
+
+with st.expander("⚠️ Why Weather Prediction is Hard (Chaos Theory)"):
+    st.markdown("""
+    ### The Butterfly Effect & Predictability Limits
+    
+    #### 🦋 Edward Lorenz's Discovery (1961)
+    - Tiny changes in initial conditions → Huge changes in forecasts
+    - Famous quote: *"A butterfly flapping wings in Brazil can cause a tornado in Texas"*
+    
+    #### 📉 Forecast Accuracy Decay
+    - **1-3 days**: Very accurate (skill > 90%)
+    - **4-7 days**: Good (skill 70-85%)
+    - **8-10 days**: Fair (skill 50-70%)
+    - **11-14 days**: Limited skill (< 50%)
+    - **Beyond 2 weeks**: No better than climatology!
+    
+    #### 🎲 Why the Limit?
+    1. **Nonlinearity**: The (u·∇)u term in Navier-Stokes
+    2. **Sensitive dependence**: Small errors **exponentially** grow
+    3. **Incomplete observations**: Can't measure everywhere perfectly
+    4. **Model approximations**: Physics not 100% accurate
+    5. **Chaos**: Atmosphere is inherently chaotic system
+    
+    #### 💡 What Helps:
+    - Better observations (satellites, radar, drones)
+    - Higher resolution models
+    - Improved physics parameterizations
+    - Ensemble forecasting (quantify uncertainty)
+    - Machine learning (AI-enhanced predictions)
+    
+    **But the ~2-week limit is fundamental!** No matter how powerful our computers become, chaos theory sets a hard limit on weather predictability.
+    """)
+
+with st.expander("🚀 Future of Weather Prediction"):
+    st.markdown("""
+    ### Cutting-Edge Developments
+    
+    #### 🤖 AI/Machine Learning
+    - Google's GraphCast: 10-day forecasts in under 1 minute!
+    - Huawei's Pangu-Weather: Beats traditional models on some metrics
+    - NVIDIA's FourCastNet: GPU-accelerated predictions
+    - **Challenge**: Interpretability and physics consistency
+    
+    #### 🛰️ Observation Revolution
+    - Small satellite constellations (100s of satellites)
+    - Ground-based GPS networks (water vapor sensing)
+    - Drone swarms for targeted observations
+    - Crowdsourced data (smartphones, IoT devices)
+    
+    #### 💻 Exascale Computing
+    - Next-gen supercomputers (1+ exaflop = quintillion calculations/sec)
+    - Sub-kilometer global resolution
+    - Explicit convection (no parameterization needed)
+    - Run-to-run in hours
+    
+    #### 🌊 Earth System Models
+    - Couple atmosphere + ocean + ice + land + chemistry
+    - Two-way interactions (e.g., ocean affects weather AND vice versa)
+    - Better long-range forecasts (weeks to seasons)
+    
+    #### 🎯 Probabilistic Forecasts
+    - Move from "will it rain?" to "30% chance of 0.5-1 inch rain"
+    - Impact-based forecasting: "Dangerous flooding likely"
+    - Communicate uncertainty effectively
+    
+    **The Goal**: More accurate, longer-range, probabilistic forecasts that save lives and property!
+    """)
+
+# Physics-based insights
+st.markdown("---")
+st.subheader("🧮 Physics Insights from Your Input")
+
+col1, col2 = st.columns(2)
+
+with col1:
+    st.markdown("#### Dimensionless Numbers")
+    reynolds = (rho * wind_speed * 1000) / mu
+    st.metric("Reynolds Number", f"{reynolds:.0f}",
+              help="Ratio of inertial to viscous forces")
+    if reynolds > 4000:
+        st.caption("✓ Turbulent flow regime (typical for atmosphere)")
+    elif reynolds > 2000:
+        st.caption("⚠ Transitional flow")
+    else:
+        st.caption("⚠ Laminar flow (unrealistic for atmosphere)")
+    
+    # Richardson number (stability)
+    if wind_speed > 0.1:
+        N_squared = 9.8 / 300 * (future_temperature - temperature) / 1000  # Simplified
+        richardson = N_squared * 1000 / (wind_speed**2)
+        st.metric("Richardson Number", f"{richardson:.2f}",
+                  help="Atmospheric stability indicator")
+        if richardson < 0.25:
+            st.caption("✓ Dynamically unstable → Turbulence")
+        elif richardson < 1:
+            st.caption("⚠ Marginally stable")
+        else:
+            st.caption("✓ Stable → Suppresses mixing")
+
+with col2:
+    st.markdown("#### Energy Analysis")
+    
+    # Kinetic energy
+    ke = 0.5 * rho * wind_speed**2
+    st.metric("Kinetic Energy Density", f"{ke:.1f} J/m³")
+    
+    # Latent heat content
+    latent_energy = specific_humidity * rho * 2.5e6
+    st.metric("Latent Heat Content", f"{latent_energy/1e3:.1f} kJ/m³",
+              help="Energy available from moisture condensation")
+    
+    if latent_energy > 1e4:
+        st.caption("🔥 High energy available → Potential for severe weather")
+    
+    # Pressure work
+    pressure_work = (future_pressure - pressure) * 100  # J/m³
+    st.metric("Pressure Work", f"{pressure_work:.0f} J/m³")
+
+# Comparison table
+st.markdown("---")
+st.subheader("📊 Summary Table: Before vs After")
+
+comparison_df = pd.DataFrame({
+    'Variable': ['Wind Speed (m/s)', 'Wind Direction', 'Temperature (°C)', 
+                 'Pressure (hPa)', 'Humidity (%)', 'Vertical Motion (m/s)',
+                 'Precipitation (mm/hr)', 'Weather Condition'],
+    'Current': [f"{wind_speed:.1f}", get_direction_name(wind_direction_deg), 
+                f"{temperature:.1f}", f"{pressure:.1f}", f"{humidity:.0f}",
+                f"{w_wind:.2f}", "0.00", current_weather],
+    f'Predicted (+{time_hours}h)': [f"{future_wind_speed:.1f}", 
+                                      get_direction_name(future_wind_direction_deg),
+                                      f"{future_temperature:.1f}", f"{future_pressure:.1f}",
+                                      f"{future_humidity:.0f}", f"{w_future:.2f}",
+                                      f"{precipitation_rate:.2f}", future_weather],
+    'Change': [f"{future_wind_speed - wind_speed:+.1f}", 
+               f"{future_wind_direction_deg - wind_direction_deg:+.0f}°",
+               f"{future_temperature - temperature:+.1f}", f"{pressure_change:+.1f}",
+               f"{future_humidity - humidity:+.0f}", f"{w_future - w_wind:+.2f}",
+               f"{precipitation_rate:+.2f}", "→"],
+    'Governing Equation': ['Navier-Stokes', 'Navier-Stokes', 'Thermodynamic',
+                          'Continuity + State', 'Moisture', 'Continuity',
+                          'Moisture', 'All 4 Coupled']
+})
+
+st.dataframe(comparison_df, use_container_width=True, hide_index=True)
+
+# Warning messages
+if precipitation_rate > 5:
+    st.error("⚠️ HEAVY PRECIPITATION PREDICTED: Flash flooding possible!")
+elif precipitation_rate > 2:
+    st.warning("⚠️ Moderate to heavy rain expected. Monitor conditions.")
+
+if future_wind_speed > 20:
+    st.error("⚠️ HIGH WINDS PREDICTED: Secure loose objects!")
+elif future_wind_speed > 15:
+    st.warning("⚠️ Strong winds expected. Take precautions.")
+
+if abs(w_future) > 2:
+    st.warning("⚠️ Strong vertical motion detected. Thunderstorm development possible!")
 
 # Footer
 st.markdown("---")
 st.markdown("""
 <div style='text-align: center; color: gray;'>
-    <p>🌍 Educational Weather Prediction Tool | Based on Navier-Stokes Fluid Dynamics</p>
-    <p>⚠️ For educational purposes only - not for actual weather forecasting</p>
+    <p>🌍 Complete Weather Prediction System | All 4 Fundamental Equations</p>
+    <p>Navier-Stokes + Continuity + Thermodynamics + Moisture Transport</p>
+    <p>⚠️ Educational tool - Not for actual weather forecasting</p>
+    <p>Built for understanding the physics behind weather prediction</p>
 </div>
 """, unsafe_allow_html=True)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
