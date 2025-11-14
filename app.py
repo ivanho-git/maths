@@ -670,7 +670,7 @@ with edu_tab1:
         ### The Butterfly Effect & Predictability Limits
         
         #### 🦋 Edward Lorenz's Discovery (1961)
-        - Tiny changes in initial conditions lead to huge changes in forecasts
+        - Tiny changes in initial conditions → Huge changes in forecasts
         - Famous quote: *"A butterfly flapping wings in Brazil can cause a tornado in Texas"*
         
         #### 📉 Forecast Accuracy Decay
@@ -1200,83 +1200,6 @@ Final Forecast: {future_weather}
     - Shows equation coupling
     - Provides intuition for how forecasts are made
     - Not suitable for actual forecasting!
-    """)
-    
-    st.markdown("---")
-    
-    st.markdown("### 🔄 Visual Algorithm Flowchart")
-    
-    st.markdown("""
-    ```
-    ┌─────────────────────────────────────────────────────────────┐
-    │                     USER INPUT                               │
-    │  p, T, RH, u, v, w, solar_heating, evaporation, time       │
-    └─────────────────┬───────────────────────────────────────────┘
-                      │
-                      ▼
-    ┌─────────────────────────────────────────────────────────────┐
-    │           STEP 2: DERIVED QUANTITIES                         │
-    │  wind_speed = √(u² + v²)                                    │
-    │  wind_direction = arctan2(v, u)                             │
-    │  specific_humidity = f(RH, T)                               │
-    └─────────────────┬───────────────────────────────────────────┘
-                      │
-                      ▼
-    ┌─────────────────────────────────────────────────────────────┐
-    │      STEP 3: CONTINUITY EQUATION                            │
-    │  divergence = ∇·u                                           │
-    │  pressure_change = -divergence × p                          │
-    │  w_future = f(divergence)  [vertical motion]               │
-    └─────────────────┬───────────────────────────────────────────┘
-                      │
-                      ├──────────────┬──────────────┬─────────────┐
-                      ▼              ▼              ▼             ▼
-              ┌───────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐
-              │STEP 4:    │  │STEP 5:   │  │STEP 6:   │  │Pressure  │
-              │THERMO     │  │NAVIER-   │  │MOISTURE  │  │Update    │
-              │DYNAMICS   │  │STOKES    │  │EQUATION  │  │          │
-              │           │  │          │  │          │  │p_future  │
-              │Q_solar    │  │∇p → wind │  │Evap +    │  │= p + Δp  │
-              │Q_latent   │  │Coriolis  │  │Condensate│  │          │
-              │Q_adiabatic│  │Friction  │  │          │  │          │
-              │           │  │          │  │precip    │  │          │
-              │T_future   │  │u_future  │  │q_future  │  │          │
-              │           │  │v_future  │  │RH_future │  │          │
-              └─────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘
-                    │             │             │             │
-                    └─────────────┴─────────────┴─────────────┘
-                                  │
-                                  ▼
-              ┌───────────────────────────────────────────────┐
-              │    STEP 7: WEATHER CLASSIFICATION             │
-              │    Score based on p, T, RH, wind, precip     │
-              │    → Clear / Cloudy / Rainy / Stormy         │
-              └───────────────────┬───────────────────────────┘
-                                  │
-                                  ▼
-              ┌───────────────────────────────────────────────┐
-              │         STEP 8: VISUALIZATIONS                │
-              │  • Wind field plot (N-S)                      │
-              │  • Divergence field (Continuity)              │
-              │  • Temperature field (Thermo)                 │
-              │  • Moisture/Precipitation (Moisture eq)       │
-              │  • Time evolution graphs                      │
-              └───────────────────┬───────────────────────────┘
-                                  │
-                                  ▼
-              ┌───────────────────────────────────────────────┐
-              │           STEP 9: OUTPUT                      │
-              │  • Current vs Future metrics                  │
-              │  • Weather forecast text                      │
-              │  • Summary with physics explanation           │
-              │  • Warnings if severe conditions              │
-              └───────────────────────────────────────────────┘
-    ```
-    """)
-    
-    st.info("""
-    **🔗 Key Point:** Notice how Step 3 (Continuity) feeds into Steps 4, 5, and 6. 
-    This shows the **coupling** - you can't solve one equation without the others!
     """)
 
 # Physics-based insightsabytes stored daily
