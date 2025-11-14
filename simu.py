@@ -1,4 +1,3 @@
-
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
@@ -102,6 +101,24 @@ with tab1:
             text_annotation = ax.text(0.02, 0.98, '', transform=ax.transAxes, 
                                      fontsize=11, verticalalignment='top',
                                      bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
+            
+            # Initialize rain drops (for divergence mode only)
+            num_raindrops = 80
+            raindrop_x = np.random.uniform(-2, 2, num_raindrops)
+            raindrop_y = np.random.uniform(0.5, 2, num_raindrops)
+            raindrop_velocities = np.random.uniform(0.08, 0.15, num_raindrops)
+            rain_scatter = ax.scatter(raindrop_x, raindrop_y, c='blue', s=30, alpha=0, marker='|', linewidths=3)
+            
+            # Initialize clouds (gray circles)
+            num_clouds = 12
+            cloud_circles = []
+            for i in range(num_clouds):
+                cx = np.random.uniform(-1.8, 1.8)
+                cy = np.random.uniform(1.3, 1.9)
+                radius = np.random.uniform(0.15, 0.3)
+                cloud = plt.Circle((cx, cy), radius, color='gray', alpha=0, zorder=10)
+                ax.add_patch(cloud)
+                cloud_circles.append(cloud)
 
         def update(frame):
             t = frame * 0.15
@@ -114,14 +131,40 @@ with tab1:
             # Update annotation for divergence
             if field_mode == "Divergence (Air Outflow/Inflow)":
                 pulse = np.sin(t) * 0.8 + 0.2
+                
                 if pulse > 0.5:
-                    state = "DIVERGENCE\n(Air Spreading OUT)\n🌬️ ⬆️"
-                    color = 'lightcoral'
+                    # DIVERGENCE - Clear skies
+                    state = "DIVERGENCE\n(Air Spreading OUT)\n☀️ Clear Skies"
+                    color = 'lightyellow'
+                    
+                    # Hide rain and clouds
+                    rain_scatter.set_alpha(0)
+                    for cloud in cloud_circles:
+                        cloud.set_alpha(0)
                 else:
-                    state = "CONVERGENCE\n(Air Coming IN)\n🌪️ ⬇️"
+                    # CONVERGENCE - Rain and clouds
+                    state = "CONVERGENCE\n(Air Coming IN)\n🌧️ Rain & Clouds"
                     color = 'lightblue'
+                    
+                    # Show clouds
+                    for cloud in cloud_circles:
+                        cloud.set_alpha(0.7)
+                    
+                    # Animate rain falling
+                    nonlocal raindrop_y, raindrop_x
+                    raindrop_y -= raindrop_velocities
+                    
+                    # Reset raindrops that fall below bottom
+                    reset_mask = raindrop_y < -2
+                    raindrop_y[reset_mask] = np.random.uniform(1.5, 2.0, np.sum(reset_mask))
+                    raindrop_x[reset_mask] = np.random.uniform(-2, 2, np.sum(reset_mask))
+                    
+                    # Update rain positions
+                    rain_scatter.set_offsets(np.c_[raindrop_x, raindrop_y])
+                    rain_scatter.set_alpha(0.6)
+                
                 text_annotation.set_text(state)
-                text_annotation.set_bbox(dict(boxstyle='round', facecolor=color, alpha=0.8))
+                text_annotation.set_bbox(dict(boxstyle='round', facecolor=color, alpha=0.9))
             
             return quiver,
 
@@ -138,12 +181,14 @@ with tab1:
         if field_mode == "Divergence (Air Outflow/Inflow)":
             st.info("""
             🌬️ **Understanding the Animation:**
-            - **RED regions** = Positive Divergence → Air spreading outward (like air escaping a balloon)
-            - **BLUE regions** = Negative Divergence (Convergence) → Air coming together (like water down a drain)
-            - **Arrows pointing OUTWARD** from center = Divergence (high pressure, sinking air)
-            - **Arrows pointing INWARD** to center = Convergence (low pressure, rising air, storms form here!)
+            - **☀️ DIVERGENCE (Clear Skies)** = Air spreading outward → High pressure → Sinking air → No clouds/rain
+            - **🌧️ CONVERGENCE (Rain & Clouds)** = Air coming together → Low pressure → Rising air → Clouds form → Rain falls!
+            - **RED regions** = Positive Divergence → Air escaping (like air leaving a balloon)
+            - **BLUE regions** = Negative Divergence (Convergence) → Air gathering (like water down a drain)
             
-            The animation alternates between these states to show both phenomena clearly.
+            **In Real Weather:**
+            - Convergence at surface → air is forced to rise → cools → water vapor condenses → clouds & precipitation ☁️🌧️
+            - Divergence at surface → air sinks → warms → evaporates moisture → clear skies ☀️
             """)
 
     # -------------------------------
