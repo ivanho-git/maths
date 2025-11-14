@@ -96,7 +96,8 @@ with tab1:
                                    cmap='RdBu', alpha=0.5)
                 plt.colorbar(div_img, ax=ax, fraction=0.046, pad=0.04, label='Divergence')
 
-        # Add text annotation for divergence mode
+        # Initialize rain and cloud variables for divergence mode
+        rain_data = {}
         if field_mode == "Divergence (Air Outflow/Inflow)":
             text_annotation = ax.text(0.02, 0.98, '', transform=ax.transAxes, 
                                      fontsize=11, verticalalignment='top',
@@ -104,10 +105,10 @@ with tab1:
             
             # Initialize rain drops (for divergence mode only)
             num_raindrops = 80
-            raindrop_x = np.random.uniform(-2, 2, num_raindrops)
-            raindrop_y = np.random.uniform(0.5, 2, num_raindrops)
-            raindrop_velocities = np.random.uniform(0.08, 0.15, num_raindrops)
-            rain_scatter = ax.scatter(raindrop_x, raindrop_y, c='blue', s=30, alpha=0, marker='|', linewidths=3)
+            rain_data['x'] = np.random.uniform(-2, 2, num_raindrops)
+            rain_data['y'] = np.random.uniform(0.5, 2, num_raindrops)
+            rain_data['velocities'] = np.random.uniform(0.08, 0.15, num_raindrops)
+            rain_scatter = ax.scatter(rain_data['x'], rain_data['y'], c='blue', s=30, alpha=0, marker='|', linewidths=3)
             
             # Initialize clouds (gray circles)
             num_clouds = 12
@@ -151,16 +152,15 @@ with tab1:
                         cloud.set_alpha(0.7)
                     
                     # Animate rain falling
-                    nonlocal raindrop_y, raindrop_x
-                    raindrop_y -= raindrop_velocities
+                    rain_data['y'] -= rain_data['velocities']
                     
                     # Reset raindrops that fall below bottom
-                    reset_mask = raindrop_y < -2
-                    raindrop_y[reset_mask] = np.random.uniform(1.5, 2.0, np.sum(reset_mask))
-                    raindrop_x[reset_mask] = np.random.uniform(-2, 2, np.sum(reset_mask))
+                    reset_mask = rain_data['y'] < -2
+                    rain_data['y'][reset_mask] = np.random.uniform(1.5, 2.0, np.sum(reset_mask))
+                    rain_data['x'][reset_mask] = np.random.uniform(-2, 2, np.sum(reset_mask))
                     
                     # Update rain positions
-                    rain_scatter.set_offsets(np.c_[raindrop_x, raindrop_y])
+                    rain_scatter.set_offsets(np.c_[rain_data['x'], rain_data['y']])
                     rain_scatter.set_alpha(0.6)
                 
                 text_annotation.set_text(state)
