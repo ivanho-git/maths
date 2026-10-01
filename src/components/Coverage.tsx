@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import DragGallery from './DragGallery'
+import DraggableStack from './DraggableStack'
 
 const SECTIONS = [
   {
@@ -58,13 +58,17 @@ export default function Coverage() {
           What's inside?
         </div>
 
-        {SECTIONS.map((s) => (
-          <div key={s.n} style={{ marginBottom: 160 }}>
-            <div className="svc-grid" style={{ display: 'grid', gridTemplateColumns: '140px 1fr', gap: 24 }}>
-              <div className="serif" style={{ fontSize: 'clamp(40px, 6vw, 84px)' }}>{s.n}</div>
-              <div>
-                <div style={{ fontSize: 14, marginBottom: 22 }}>{s.kicker}</div>
-                <h2 className="serif" style={{ fontSize: 'clamp(38px, 7vw, 96px)', margin: '0 0 56px' }}>
+        {SECTIONS.map((s, sectionIndex) => (
+          <div key={s.n} className="service-layout" style={{ display: 'grid', gridTemplateColumns: '42% 58%', gap: 0, minHeight: 760, alignItems: 'start', marginBottom: 110 }}>
+            <div className="service-visual" style={{ position: 'relative', minHeight: 650, order: sectionIndex === 1 ? 2 : 0 }}>
+              <div className="serif service-number" style={{ fontSize: 'clamp(90px, 15vw, 200px)', lineHeight: 1, textAlign: 'center' }}>{s.n}</div>
+              <div style={{ position: 'absolute', top: 170, left: sectionIndex === 1 ? 20 : -48 }} className="stack-placement">
+                <DraggableStack items={s.photos.map(p => typeof p === 'string' ? { caption: p } : p)} label={`${s.title.join(' ')} image stack`} />
+              </div>
+            </div>
+            <div className="service-copy" style={{ order: sectionIndex === 1 ? 0 : 2, paddingTop: 24 }}>
+                <div style={{ fontSize: 12, marginBottom: 24, textTransform: 'uppercase' }}>{s.kicker}</div>
+                <h2 className="serif" style={{ fontSize: 'clamp(48px, 8vw, 126px)', margin: '0 0 54px' }}>
                   {s.title.map((t, i) => (
                     <motion.span
                       key={t}
@@ -72,36 +76,25 @@ export default function Coverage() {
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.8, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                      style={{ display: 'block', paddingLeft: i === 1 ? '1.2em' : 0 }}
+                      style={{ display: 'block', paddingLeft: i === 1 ? '0.3em' : 0 }}
                     >
                       {t}
                     </motion.span>
                   ))}
                 </h2>
-                <div
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                    gap: 40,
-                    fontSize: 16,
-                    lineHeight: 1.65,
-                  }}
-                >
+                <div style={{ maxWidth: 520, fontSize: 16, lineHeight: 1.6 }}>
                   {s.body.map((p, i) => (
-                    <p key={i} style={{ margin: 0 }}>{p}</p>
+                    <p key={i} style={{ margin: '0 0 28px' }}>{p}</p>
                   ))}
                 </div>
                 <a href="#subscribe" className="pill" style={{ marginTop: 40 }}>
                   {s.link} <span aria-hidden>→</span>
                 </a>
-              </div>
             </div>
-
-            <DragGallery items={s.photos.map(p => typeof p === 'string' ? { caption: p } : p)} label={`${s.title.join(' ')} gallery`} />
           </div>
         ))}
       </div>
-      <style>{`@media (max-width: 800px){ .svc-grid{ grid-template-columns: 1fr !important; } }`}</style>
+      <style>{`@media (max-width: 800px){ .service-layout { display: flex !important; flex-direction: column; min-height: 0 !important; margin-bottom: 90px !important; } .service-copy, .service-visual { width: 100%; order: 0 !important; } .service-visual { min-height: 460px !important; order: 1 !important; } .stack-placement { top: 90px !important; left: 8px !important; } .service-number { text-align: left !important; } .service-copy h2 { font-size: clamp(46px, 11vw, 72px) !important; } }`}</style>
     </section>
   )
 }

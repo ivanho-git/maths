@@ -36,8 +36,8 @@ export default function Header() {
             <a href="#top" style={{ display: 'flex' }}>
               <Logo />
             </a>
-            <span className="caps" style={{ fontSize: 11 }}>The 180° Newsletter</span>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 28 }}>
+            <span className="caps header-label" style={{ fontSize: 11 }}>The 180° Newsletter</span>
+            <div className="header-actions" style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 28 }}>
               <span
                 style={{
                   border: '1px solid var(--red)',
@@ -104,6 +104,7 @@ export default function Header() {
           </motion.div>
         )}
       </AnimatePresence>
+      <style>{`@media (max-width: 600px) { .header-label { font-size: 8px !important; letter-spacing: .12em !important; white-space: nowrap; } .header-actions { gap: 12px !important; } }`}</style>
     </>
   )
 }

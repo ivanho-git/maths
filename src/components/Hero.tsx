@@ -55,7 +55,7 @@ export default function Hero() {
         <h1 style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)' }}>
           The 180 Degrees Consulting Newsletter
         </h1>
-        <div style={{ minHeight: '78vh', display: 'flex', alignItems: 'center', padding: '48px 0' }}>
+        <div style={{ minHeight: '92vh', display: 'flex', alignItems: 'center', padding: '48px 0' }}>
           <AnimatePresence mode="wait">
             <div key={i} style={{ width: '100%' }}>
               {SLIDES[i].map((line, li) => (
@@ -91,17 +91,9 @@ export default function Hero() {
           </AnimatePresence>
         </div>
 
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: 48,
-            padding: '40px 0 120px',
-            fontSize: 22,
-            lineHeight: 1.5,
-          }}
-        >
-          <p style={{ margin: 0 }}>
+        <div className="hero-intro" style={{ display: 'flex', justifyContent: 'flex-end', padding: '80px 0 200px' }}>
+          <div style={{ width: '100%', maxWidth: 560, fontSize: 'clamp(20px, 2.2vw, 30px)', lineHeight: 1.35 }}>
+          <p style={{ margin: '0 0 52px' }}>
             <strong>180 Degrees Consulting</strong> is the world's largest
             student-run consultancy, pairing university teams with nonprofits
             and social enterprises — at no cost to them.
@@ -111,6 +103,7 @@ export default function Hero() {
             shipped, the chapters making noise, and the{' '}
             <strong>tools you can steal</strong> for your own work.
           </p>
+          </div>
         </div>
       </div>
     </section>
