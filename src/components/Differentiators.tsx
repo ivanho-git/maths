@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import Photo from './Photo'
+import { Reader, Waver } from './Figures'
 
 const POINTS = [
   {
@@ -37,27 +38,28 @@ export default function Differentiators() {
           Why read us
         </div>
 
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-            gap: '64px 80px',
-            marginBottom: 120,
-          }}
-        >
-          {POINTS.map((p, i) => (
-            <motion.div
-              key={p.title}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: (i % 2) * 0.12 }}
-            >
-              <h2 className="serif" style={{ fontSize: 'clamp(44px, 5.5vw, 76px)', margin: '0 0 20px' }}>{p.title}</h2>
-              <p style={{ fontSize: 16, lineHeight: 1.65, margin: 0, maxWidth: 440 }}>{p.body}</p>
-            </motion.div>
-          ))}
+        <div className="why-tiles">
+          {POINTS.map((p, i) => {
+            const bg = ['var(--ink)', 'var(--green)', 'var(--green)', 'var(--lilac)'][i]
+            return (
+              <motion.div
+                key={p.title}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: (i % 2) * 0.1 }}
+                className="why-tile"
+                style={{ background: bg, marginTop: i % 2 ? 90 : 0 }}
+              >
+                <h3 className="serif" style={{ fontSize: 'clamp(34px, 3.6vw, 52px)', margin: '0 0 14px', color: '#fff' }}>{p.title}</h3>
+                <p style={{ fontSize: 16, lineHeight: 1.6, margin: 0, color: '#fff', maxWidth: 360 }}>{p.body}</p>
+              </motion.div>
+            )
+          })}
+          <Reader size={200} style={{ position: 'absolute', left: '38%', bottom: -70 }} />
+          <Waver size={170} style={{ position: 'absolute', right: -10, bottom: -60 }} />
         </div>
+        <style>{`.why-tiles { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 160px; } .why-tile { border-radius: 18px; padding: 30px; min-height: 260px; display: flex; flex-direction: column; justify-content: flex-end; } @media (max-width: 800px) { .why-tiles { grid-template-columns: 1fr; } .why-tile { margin-top: 0 !important; } }`}</style>
 
         <div className="gallery" style={{ columnCount: 3, columnGap: 32 }}>
           {GALLERY.map((c, i) => (

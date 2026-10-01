@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Megaphone, PaperPlane } from './Doodles'
+import { Strider } from './Figures'
 
 type Line = { word: string; note?: string[]; align?: 'left' | 'right' }
 
@@ -51,64 +52,44 @@ export default function Hero() {
   }, [])
 
   return (
-    <section id="top" style={{ paddingTop: 88, position: 'relative' }}>
-      <Megaphone size={170} style={{ position: 'absolute', right: '6vw', top: 150, transform: 'rotate(-8deg)' }} />
-      <PaperPlane size={130} style={{ position: 'absolute', right: '22vw', top: '68vh' }} />
-      <div className="wrap">
-        <h1 style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)' }}>
-          The 180 Degrees Consulting Newsletter
-        </h1>
-        <div style={{ minHeight: '92vh', display: 'flex', alignItems: 'center', padding: '48px 0' }}>
+    <section id="top" style={{ padding: '14px 14px 0' }}>
+      <h1 style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)' }}>
+        The 180 Degrees Consulting Newsletter
+      </h1>
+      <div className="hero-band">
+        <Megaphone size={120} style={{ position: 'absolute', left: '6%', top: '22%', transform: 'rotate(-14deg)' }} />
+        <PaperPlane size={110} style={{ position: 'absolute', right: '8%', top: '18%' }} />
+        <div style={{ position: 'relative', zIndex: 2, minHeight: 470, display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
           <AnimatePresence mode="wait">
-            <div key={i} style={{ width: '100%' }}>
+            <div key={i}>
               {SLIDES[i].map((line, li) => (
-                <div
-                  key={line.word}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 28,
-                    flexDirection: line.align === 'left' ? 'row-reverse' : 'row',
-                    justifyContent: line.align === 'left' ? 'flex-end' : 'flex-start',
-                  }}
-                >
-                  <span className="serif" style={{ fontSize: 'clamp(56px, 11.5vw, 170px)' }}>
+                <div key={line.word} style={{ lineHeight: 0.9, margin: '6px 0' }}>
+                  <span className="serif" style={{ fontSize: 'clamp(54px, 9.5vw, 150px)', color: li === 1 ? '#fff' : 'var(--ink)', background: li === 1 ? 'var(--green)' : 'none', padding: li === 1 ? '0.04em 0.14em' : 0, borderRadius: 12, display: 'inline-block' }}>
                     <Letters text={line.word} delay={li * 0.08} />
                   </span>
-                  {line.note && (
-                    <motion.span
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ delay: 0.5 + li * 0.1 }}
-                      style={{ fontSize: 11, textTransform: 'uppercase', lineHeight: 1.4, letterSpacing: 0.4 }}
-                    >
-                      {line.note[0]}
-                      <br />
-                      <strong>{line.note[1]}</strong>
-                    </motion.span>
-                  )}
                 </div>
               ))}
             </div>
           </AnimatePresence>
         </div>
-
-        <div className="hero-intro" style={{ display: 'flex', justifyContent: 'flex-end', padding: '80px 0 200px' }}>
-          <div style={{ width: '100%', maxWidth: 560, fontSize: 'clamp(20px, 2.2vw, 30px)', lineHeight: 1.35 }}>
-          <p style={{ margin: '0 0 52px' }}>
-            <strong>180 Degrees Consulting</strong> is the world's largest
-            student-run consultancy, pairing university teams with nonprofits
-            and social enterprises — at no cost to them.
-          </p>
-          <p style={{ margin: 0 }}>
-            This newsletter is our monthly dispatch: the projects that
-            shipped, the chapters making noise, and the{' '}
-            <strong>tools you can steal</strong> for your own work.
-          </p>
-          </div>
+        <Strider size={240} style={{ position: 'relative', zIndex: 3, display: 'block', margin: '-40px auto 0' }} />
+        <p className="serif" style={{ fontSize: 22, margin: '18px 0 22px', textAlign: 'center' }}>This newsletter is made for you</p>
+        <div style={{ textAlign: 'center', paddingBottom: 56 }}>
+          <a href="#subscribe" className="pill" style={{ background: 'var(--green)', color: '#fff' }}>Subscribe for free</a>
         </div>
       </div>
+
+      <div className="wrap" style={{ padding: '110px 0 140px', textAlign: 'center' }}>
+        <p className="serif" style={{ fontSize: 'clamp(28px, 3.6vw, 52px)', lineHeight: 1.08, maxWidth: 1000, margin: '0 auto' }}>
+          180 Degrees Consulting is the world's largest student-run consultancy, pairing university teams with nonprofits and social enterprises at no cost.
+          {' '}<span style={{ color: 'var(--green)' }}>Every month we share the projects that shipped, the chapters making noise and the tools you can borrow.</span>
+        </p>
+      </div>
+
+      <style>{`
+        .hero-band { position: relative; overflow: hidden; background: var(--lilac); border-radius: 28px; padding-top: 110px; }
+        @media (max-width: 800px) { .hero-band svg:not([aria-label]) { transform: scale(.7); } }
+      `}</style>
     </section>
   )
 }

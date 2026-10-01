@@ -38,9 +38,9 @@ const STEPS = [
 
 export default function Process() {
   return (
-    <section id="method" style={{ padding: '40px 0 120px' }}>
+    <section id="method" style={{ margin: '0 14px', padding: '90px 0 40px', background: 'var(--green)', color: '#fff', borderRadius: 28 }}>
       <div className="wrap">
-        <div className="caps" style={{ borderTop: '1px solid var(--red)', paddingTop: 22, marginBottom: 100 }}>
+        <div className="caps" style={{ paddingTop: 0, marginBottom: 80, color: '#fff' }}>
           How each issue is made
         </div>
 

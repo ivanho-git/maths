@@ -9,7 +9,7 @@ export default function Footer() {
   return (
     <footer id="subscribe">
       <div className="wrap">
-        <div style={{ borderTop: '1px solid var(--red)', padding: '110px 0 90px' }}>
+        <div style={{ background: 'var(--ink)', color: '#fff', borderRadius: 28, padding: '100px 48px 80px', margin: '120px 0 40px', textAlign: 'center' }}>
           <div className="serif" style={{ fontSize: 'clamp(56px, 10vw, 150px)' }}>
             {['Never miss', 'an issue'].map((t, i) => (
               <motion.div
@@ -18,7 +18,7 @@ export default function Footer() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-                style={{ textAlign: i ? 'right' : 'left', fontStyle: i ? 'italic' : 'normal' }}
+                style={{ textAlign: 'center', color: i ? 'var(--lilac)' : '#fff' }}
               >
                 {t}
               </motion.div>
@@ -33,7 +33,7 @@ export default function Footer() {
                 e.preventDefault()
                 if (email.trim()) setDone(true)
               }}
-              style={{ display: 'flex', gap: 14, marginTop: 56, flexWrap: 'wrap', maxWidth: 620 }}
+              style={{ display: 'flex', gap: 14, margin: '56px auto 0', flexWrap: 'wrap', maxWidth: 620, justifyContent: 'center' }}
             >
               <input
                 type="email"
@@ -45,8 +45,8 @@ export default function Footer() {
                   flex: '1 1 280px',
                   background: 'transparent',
                   border: 'none',
-                  borderBottom: '1px solid var(--red)',
-                  color: 'var(--red)',
+                  borderBottom: '1px solid #fff',
+                  color: '#fff',
                   fontSize: 18,
                   padding: '14px 0',
                   outline: 'none',
