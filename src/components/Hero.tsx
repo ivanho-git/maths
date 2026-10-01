@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Megaphone, PaperPlane, Sparkle, HeartBubble, Pencil, Mug, Globe, BrushStroke } from './Doodles'
-import { Strider } from './Figures'
+import { Megaphone, PaperPlane, Sparkle, HeartBubble, Pencil, Mug, Globe, BrushStroke, Pop } from './Doodles'
+import { Host } from './Host'
 
 type Line = { word: string; note?: string[]; align?: 'left' | 'right' }
 
@@ -57,14 +57,16 @@ export default function Hero() {
         The 180 Degrees Consulting Newsletter
       </h1>
       <div className="hero-band">
-        <Megaphone size={120} style={{ position: 'absolute', left: '6%', top: '22%', transform: 'rotate(-14deg)' }} />
-        <PaperPlane size={110} style={{ position: 'absolute', right: '8%', top: '18%' }} />
-        <HeartBubble size={86} style={{ position: 'absolute', left: '14%', top: '56%' }} />
-        <Sparkle size={40} style={{ position: 'absolute', left: '28%', top: '16%' }} />
-        <Sparkle size={30} style={{ position: 'absolute', right: '24%', top: '62%' }} />
-        <Pencil size={84} style={{ position: 'absolute', right: '12%', bottom: '18%' }} />
-        <Mug size={74} style={{ position: 'absolute', left: '9%', bottom: '10%' }} />
-        <Globe size={70} style={{ position: 'absolute', right: '30%', top: '9%' }} />
+        <Pop style={{ left: '6%', top: '22%' }} delay={0.1}><Megaphone size={120} /></Pop>
+        <Pop style={{ right: '8%', top: '18%' }} delay={0.25}><PaperPlane size={110} /></Pop>
+        <Pop style={{ left: '15%', top: '55%' }} delay={0.4}><HeartBubble size={90} /></Pop>
+        <Pop style={{ left: '28%', top: '15%' }} delay={0.5}><Sparkle size={40} /></Pop>
+        <Pop style={{ right: '24%', top: '60%' }} delay={0.6}><Sparkle size={30} /></Pop>
+        <Pop style={{ right: '11%', top: '48%' }} delay={0.7}><Pencil size={84} /></Pop>
+        <Pop style={{ left: '8%', bottom: '14%' }} delay={0.8}><Mug size={74} /></Pop>
+        <Pop style={{ right: '30%', top: '9%' }} delay={0.9}><Globe size={70} /></Pop>
+        <Pop style={{ right: '7%', bottom: '10%' }} delay={1}><Sparkle size={52} /></Pop>
+        <Pop style={{ left: '34%', bottom: '24%' }} delay={1.1}><Sparkle size={26} /></Pop>
         <div style={{ position: 'relative', zIndex: 2, minHeight: 470, display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
           <AnimatePresence mode="wait">
             <div key={i}>
@@ -79,7 +81,7 @@ export default function Hero() {
             </div>
           </AnimatePresence>
         </div>
-        <Strider size={240} style={{ position: 'relative', zIndex: 3, display: 'block', margin: '-40px auto 0' }} />
+        <Host size={260} style={{ position: 'relative', zIndex: 3, display: 'block', margin: '-30px auto 0', marginBottom: 0 }} />
         <p className="serif" style={{ fontSize: 22, margin: '18px 0 22px', textAlign: 'center' }}>This newsletter is made for you</p>
         <div style={{ textAlign: 'center', paddingBottom: 56 }}>
           <a href="#subscribe" className="pill" style={{ background: 'var(--green)', color: '#fff' }}>Subscribe for free</a>
@@ -94,8 +96,7 @@ export default function Hero() {
       </div>
 
       <style>{`
-        .hero-band > svg { animation: bob 5s ease-in-out infinite; } .hero-band > svg:nth-of-type(2n) { animation-duration: 6.5s; animation-delay: -2s; }
-        .hero-band { position: relative; overflow: hidden; background: var(--lilac); border-radius: 28px; padding-top: 110px; }
+                .hero-band { position: relative; overflow: hidden; background: var(--lilac); border-radius: 28px; padding-top: 110px; }
         @media (max-width: 800px) { .hero-band svg:not([aria-label]) { transform: scale(.7); } }
       `}</style>
     </section>

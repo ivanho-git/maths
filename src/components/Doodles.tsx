@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion'
 // Original hand-drawn-style doodles for 180 Degrees Consulting.
 type P = { size?: number; style?: React.CSSProperties }
 
@@ -76,8 +77,23 @@ export function Globe({ size = 84, style }: P) {
 /** Hand-painted marker highlight; place behind a word. */
 export function BrushStroke({ color = 'var(--green)', style }: { color?: string; style?: React.CSSProperties }) {
   return (
-    <svg viewBox="0 0 400 100" preserveAspectRatio="none" style={{ position: 'absolute', top: '4%', left: '-10%', width: '120%', height: '100%', zIndex: -1, ...style }} aria-hidden>
+    <svg viewBox="0 0 400 100" preserveAspectRatio="none" style={{ position: 'absolute', top: '-14%', left: '-8%', width: '116%', height: '128%', zIndex: -1, ...style }} aria-hidden>
       <path d="M8 22 C80 8 200 14 392 6 C396 40 388 66 394 92 C260 86 120 98 6 90 C12 64 2 44 8 22Z" fill={color} />
     </svg>
+  )
+}
+
+/** Pops a doodle in when it scrolls into view, then lets it bob. */
+export function Pop({ children, style, delay = 0 }: { children: React.ReactNode; style?: React.CSSProperties; delay?: number }) {
+  return (
+    <motion.div
+      initial={{ scale: 0, rotate: -25, opacity: 0 }}
+      whileInView={{ scale: 1, rotate: 0, opacity: 1 }}
+      viewport={{ once: true }}
+      transition={{ type: 'spring', stiffness: 260, damping: 14, delay }}
+      style={{ position: 'absolute', pointerEvents: 'none', ...style }}
+    >
+      <div style={{ animation: `bob ${4 + (delay * 10) % 3}s ease-in-out infinite` }}>{children}</div>
+    </motion.div>
   )
 }

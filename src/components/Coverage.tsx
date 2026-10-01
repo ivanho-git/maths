@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import DraggableStack from './DraggableStack'
+import { Pop, Sparkle, HeartBubble, Pencil, Globe, Mug } from './Doodles'
 
 const SECTIONS = [
   {
@@ -66,7 +67,9 @@ export default function Coverage() {
                 <DraggableStack items={s.photos.map(p => typeof p === 'string' ? { caption: p } : p)} label={`${s.title.join(' ')} image stack`} />
               </div>
             </div>
-            <div className="service-copy" style={{ order: sectionIndex === 1 ? 0 : 2, paddingTop: 24 }}>
+            <div className="service-copy" style={{ order: sectionIndex === 1 ? 0 : 2, paddingTop: 24, position: 'relative' }}>
+              <Pop style={{ right: '4%', top: 0 }} delay={0.2}>{[<Sparkle size={48} key="a" />, <HeartBubble size={86} key="b" />, <Pencil size={80} key="c" />][sectionIndex]}</Pop>
+              <Pop style={{ right: '16%', bottom: 10 }} delay={0.45}>{[<Globe size={64} key="a" />, <Sparkle size={34} key="b" />, <Mug size={70} key="c" />][sectionIndex]}</Pop>
                 <div style={{ fontSize: 12, marginBottom: 24, textTransform: 'uppercase' }}>{s.kicker}</div>
                 <h2 className="serif" style={{ fontSize: 'clamp(48px, 8vw, 126px)', margin: '0 0 54px' }}>
                   {s.title.map((t, i) => (
