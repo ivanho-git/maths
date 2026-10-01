@@ -2,17 +2,17 @@ import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 
 const LINKS = [
-  { href: '/#coverage', label: 'Inside the issue' },
+  { href: '/', label: 'Home' },
   { href: '/articles', label: 'All articles' },
-  { href: '/#method', label: 'Our method' },
+  { href: '/#method', label: 'How it works' },
   { href: '#subscribe', label: 'Subscribe' },
 ]
 
-export function Logo({ size = 34 }: { size?: number }) {
+export function Logo({ size = 34, color = 'var(--green)' }: { size?: number; color?: string }) {
   return (
     <svg width={size} height={size} viewBox="0 0 40 40" fill="none" aria-label="180 Degrees Consulting">
-      <path d="M20 4a16 16 0 1 1-16 16" stroke="var(--red)" strokeWidth="5" strokeLinecap="round" />
-      <path d="M4 10v10h10" stroke="var(--red)" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M20 4a16 16 0 1 1-16 16" stroke={color} strokeWidth="5" strokeLinecap="round" />
+      <path d="M4 10v10h10" stroke={color} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }
@@ -22,47 +22,13 @@ export default function Header() {
 
   return (
     <>
-      <header style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 60, background: 'var(--cream)' }}>
-        <div className="wrap">
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr auto 1fr',
-              alignItems: 'center',
-              height: 88,
-              borderBottom: '1px solid var(--red)',
-            }}
-          >
-            <a href="/" aria-label="Home" style={{ display: 'flex' }}>
-              <Logo />
-            </a>
-            <span className="caps header-label" style={{ fontSize: 11 }}>The 180° Newsletter</span>
-            <div className="header-actions" style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 28 }}>
-              <span
-                style={{
-                  border: '1px solid var(--red)',
-                  borderRadius: 999,
-                  padding: '6px 14px',
-                  fontSize: 14,
-                  fontWeight: 600,
-                }}
-              >
-                EN
-              </span>
-              <button
-                type="button"
-                aria-label="Open menu"
-                onClick={() => setOpen(true)}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex' }}
-              >
-                <svg width="22" height="18" viewBox="0 0 22 18">
-                  <path d="M0 1h22M0 9h22M0 17h22" stroke="var(--red)" strokeWidth="2" />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+      <nav className="pill-nav">
+        <a href="#subscribe" className="pill-nav-side">Subscribe</a>
+        <a href="/" className="pill-nav-logo" aria-label="Home">
+          <Logo size={24} /> <span>180° Newsletter</span>
+        </a>
+        <button type="button" className="pill-nav-side" onClick={() => setOpen(true)} aria-label="Open menu">Menu</button>
+      </nav>
 
       <AnimatePresence>
         {open && (
@@ -71,20 +37,15 @@ export default function Header() {
             animate={{ clipPath: 'inset(0 0 0% 0)' }}
             exit={{ clipPath: 'inset(0 0 100% 0)' }}
             transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
-            style={{ position: 'fixed', inset: 0, zIndex: 70, background: 'var(--red)', color: 'var(--cream)' }}
+            style={{ position: 'fixed', inset: 0, zIndex: 70, background: 'var(--green)', color: '#fff' }}
           >
             <div className="wrap" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-              <div style={{ display: 'flex', justifyContent: 'flex-end', height: 88, alignItems: 'center' }}>
-                <button
-                  type="button"
-                  aria-label="Close menu"
-                  onClick={() => setOpen(false)}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--cream)', fontSize: 34 }}
-                >
-                  ×
+              <div style={{ display: 'flex', justifyContent: 'flex-end', height: 120, alignItems: 'center' }}>
+                <button type="button" aria-label="Close menu" onClick={() => setOpen(false)} className="pill" style={{ padding: '10px 18px' }}>
+                  Close ×
                 </button>
               </div>
-              <nav style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: '6vh' }}>
+              <nav style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {LINKS.map((l, i) => (
                   <motion.a
                     key={l.href}
@@ -94,7 +55,7 @@ export default function Header() {
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ delay: 0.25 + i * 0.07, duration: 0.6 }}
                     className="serif"
-                    style={{ color: 'var(--cream)', textDecoration: 'none', fontSize: 'clamp(44px, 8vw, 104px)' }}
+                    style={{ color: '#fff', textDecoration: 'none', fontSize: 'clamp(52px, 9vw, 120px)' }}
                   >
                     {l.label}
                   </motion.a>
@@ -104,7 +65,15 @@ export default function Header() {
           </motion.div>
         )}
       </AnimatePresence>
-      <style>{`@media (max-width: 600px) { .header-label { font-size: 8px !important; letter-spacing: .12em !important; white-space: nowrap; } .header-actions { gap: 12px !important; } }`}</style>
+
+      <style>{`
+        .pill-nav { position: fixed; top: 28px; left: 50%; transform: translateX(-50%); z-index: 60; display: grid; grid-template-columns: auto 1fr auto; align-items: center; width: min(440px, calc(100vw - 32px)); height: 50px; background: #fff; border: 1.5px solid var(--ink); border-radius: 999px; box-shadow: var(--shadow); }
+        .pill-nav-side { padding: 0 18px; font-family: var(--serif); font-size: 15px; text-transform: uppercase; color: var(--ink); text-decoration: none; height: 26px; display: flex; align-items: center; background: none; border: none; cursor: pointer; }
+        .pill-nav-side:first-child { border-right: 2px solid var(--ink); }
+        .pill-nav-side:last-child { border-left: 2px solid var(--ink); }
+        .pill-nav-logo { display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--ink); text-decoration: none; font-family: var(--serif); font-size: 18px; white-space: nowrap; }
+        @media (max-width: 420px) { .pill-nav-logo span { display: none; } }
+      `}</style>
     </>
   )
 }

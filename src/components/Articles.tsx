@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Logo } from './Header'
 
 type Article = { title: string; category: string; tone: 'red' | 'ink' | 'pink'; image?: string; fit?: 'contain' | 'cover' }
 
@@ -21,12 +20,12 @@ const ARTICLES: Article[] = [
 ]
 
 const TONE = {
-  red: { bg: 'var(--red)', fg: 'var(--cream)', frame: '#ffc9cd' },
-  ink: { bg: '#2b1d1f', fg: 'var(--cream)', frame: 'var(--red)' },
-  pink: { bg: '#ffc9cd', fg: '#2b1d1f', frame: 'var(--red)' },
+  red: { bg: 'var(--green)', fg: '#fff', frame: '#fff' },
+  ink: { bg: 'var(--ink)', fg: '#fff', frame: '#fff' },
+  pink: { bg: 'var(--lilac)', fg: '#fff', frame: '#fff' },
 }
 
-const SHADOW = '3px 3px 0 #2b1d1f'
+const SHADOW = 'var(--shadow)'
 
 function Card({ a, i }: { a: Article; i: number }) {
   const t = TONE[a.tone]
@@ -72,11 +71,6 @@ export default function Articles() {
 
   return (
     <div className="hr-page">
-      <nav className="hr-nav">
-        <a href="/#subscribe" className="hr-nav-side">Subscribe</a>
-        <a href="/" className="hr-nav-logo" aria-label="Home"><Logo size={26} /> <span>180° Newsletter</span></a>
-        <a href="/" className="hr-nav-side">Menu</a>
-      </nav>
 
       <div className="hr-filter">
         <button type="button" className="hr-filter-btn" onClick={() => setOpen(o => !o)} aria-expanded={open}>
@@ -113,15 +107,15 @@ export default function Articles() {
       </section>
 
       <style>{`
-        .hr-page { background: var(--cream); color: #2b1d1f; padding: 0 26px 40px; }
-        .hr-nav { position: fixed; top: 38px; left: 50%; transform: translateX(-50%); z-index: 60; display: grid; grid-template-columns: auto 1fr auto; align-items: center; width: min(430px, calc(100vw - 40px)); height: 50px; background: #fff; border: 1.5px solid #2b1d1f; border-radius: 999px; box-shadow: ${SHADOW}; }
-        .hr-nav-side { padding: 0 18px; font-family: 'Anton', sans-serif; font-size: 15px; text-transform: uppercase; color: #2b1d1f; text-decoration: none; height: 26px; display: flex; align-items: center; }
-        .hr-nav-side:first-child { border-right: 2px solid #2b1d1f; } .hr-nav-side:last-child { border-left: 2px solid #2b1d1f; }
-        .hr-nav-logo { display: flex; align-items: center; justify-content: center; gap: 8px; color: #2b1d1f; text-decoration: none; font-family: 'Anton', sans-serif; font-size: 18px; }
+        .hr-page { background: var(--cream); color: var(--ink); padding: 0 26px 40px; }
+        .hr-nav { position: fixed; top: 38px; left: 50%; transform: translateX(-50%); z-index: 60; display: grid; grid-template-columns: auto 1fr auto; align-items: center; width: min(430px, calc(100vw - 40px)); height: 50px; background: #fff; border: 1.5px solid var(--ink); border-radius: 999px; box-shadow: ${SHADOW}; }
+        .hr-nav-side { padding: 0 18px; font-family: 'Anton', sans-serif; font-size: 15px; text-transform: uppercase; color: var(--ink); text-decoration: none; height: 26px; display: flex; align-items: center; }
+        .hr-nav-side:first-child { border-right: 2px solid var(--ink); } .hr-nav-side:last-child { border-left: 2px solid var(--ink); }
+        .hr-nav-logo { display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--ink); text-decoration: none; font-family: 'Anton', sans-serif; font-size: 18px; }
         .hr-filter { position: sticky; top: 110px; z-index: 50; margin-top: 110px; margin-bottom: 16px; width: max-content; }
-        .hr-filter-btn { position: relative; display: flex; align-items: center; gap: 12px; padding: 12px 20px; background: #fff; border: 1.5px solid #2b1d1f; border-radius: 999px; box-shadow: ${SHADOW}; font-family: 'Anton', sans-serif; font-size: 16px; color: #2b1d1f; cursor: pointer; }
-        .hr-badge { position: absolute; top: -9px; right: -9px; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 10px; background: #ffc9cd; border: 1px solid #2b1d1f; font-family: Inter, sans-serif; font-size: 11px; display: flex; align-items: center; justify-content: center; }
-        .hr-filter-panel { position: absolute; top: calc(100% + 10px); left: 0; width: 290px; padding: 18px 20px; background: #fff; border: 1.5px solid #2b1d1f; border-radius: 22px; box-shadow: ${SHADOW}; }
+        .hr-filter-btn { position: relative; display: flex; align-items: center; gap: 12px; padding: 12px 20px; background: #fff; border: 1.5px solid var(--ink); border-radius: 999px; box-shadow: ${SHADOW}; font-family: 'Anton', sans-serif; font-size: 16px; color: var(--ink); cursor: pointer; }
+        .hr-badge { position: absolute; top: -9px; right: -9px; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 10px; background: var(--lilac); border: 1px solid var(--ink); font-family: Inter, sans-serif; font-size: 11px; display: flex; align-items: center; justify-content: center; }
+        .hr-filter-panel { position: absolute; top: calc(100% + 10px); left: 0; width: 290px; padding: 18px 20px; background: #fff; border: 1.5px solid var(--ink); border-radius: 22px; box-shadow: ${SHADOW}; }
         .hr-filter-panel label { display: flex; gap: 10px; align-items: center; padding: 6px 0; font-size: 15px; cursor: pointer; }
         .hr-filter-panel input { width: 17px; height: 17px; accent-color: var(--red); }
         .hr-clear { margin-top: 8px; background: none; border: none; cursor: pointer; font-size: 18px; padding: 0; }
@@ -134,13 +128,13 @@ export default function Articles() {
         .hr-frame + .hr-card-top { position: absolute; top: 34px; left: 34px; right: 34px; }
         .hr-card:not(:has(.hr-frame)) .hr-card-top { position: absolute; top: 34px; left: 24px; right: 24px; }
         .hr-pill { border: 1px solid; border-radius: 999px; padding: 8px 16px; font-size: 12px; background: transparent; }
-        .hr-frame + .hr-card-top .hr-pill { color: #2b1d1f !important; border-color: #2b1d1f !important; }
-        .hr-arrow { width: 44px; height: 44px; border-radius: 50%; background: #fff; color: #2b1d1f; border: 1.5px solid #2b1d1f; box-shadow: ${SHADOW}; display: flex; align-items: center; justify-content: center; font-size: 18px; opacity: 0; transition: opacity .25s; }
+        .hr-frame + .hr-card-top .hr-pill { color: var(--ink) !important; border-color: var(--ink) !important; }
+        .hr-arrow { width: 44px; height: 44px; border-radius: 50%; background: #fff; color: var(--ink); border: 1.5px solid var(--ink); box-shadow: ${SHADOW}; display: flex; align-items: center; justify-content: center; font-size: 18px; opacity: 0; transition: opacity .25s; }
         .hr-card:hover .hr-arrow, .hr-card:focus-visible .hr-arrow { opacity: 1; }
         .hr-title { font-family: 'Anton', sans-serif; font-weight: 400; font-size: clamp(34px, 4vw, 60px); line-height: 1.02; margin: 0; }
         .hr-cta { text-align: center; padding: 140px 0 60px; }
-        .hr-cta-title { font-family: 'Anton', sans-serif; font-weight: 400; text-transform: lowercase; font-size: clamp(56px, 9vw, 150px); line-height: 0.95; max-width: 1200px; margin: 0 auto 40px; color: #2b1d1f; }
-        .hr-cta-btn { display: inline-block; padding: 16px 30px; border-radius: 999px; background: var(--red); color: var(--cream); border: 1.5px solid #2b1d1f; box-shadow: ${SHADOW}; text-decoration: none; text-transform: uppercase; font-size: 14px; letter-spacing: .05em; }
+        .hr-cta-title { font-family: 'Anton', sans-serif; font-weight: 400; text-transform: lowercase; font-size: clamp(56px, 9vw, 150px); line-height: 0.95; max-width: 1200px; margin: 0 auto 40px; color: var(--ink); }
+        .hr-cta-btn { display: inline-block; padding: 16px 30px; border-radius: 999px; background: var(--red); color: var(--cream); border: 1.5px solid var(--ink); box-shadow: ${SHADOW}; text-decoration: none; text-transform: uppercase; font-size: 14px; letter-spacing: .05em; }
         @media (max-width: 800px) { .hr-grid { grid-template-columns: 1fr; } .hr-card { min-height: 380px; } .hr-filter { top: 100px; } .hr-nav { top: 20px; } }
       `}</style>
     </div>

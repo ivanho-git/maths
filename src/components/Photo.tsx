@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 
-const TONES = ['#ff4552', '#ff6f78', '#f0303e', '#ff8a91', '#e8283a']
+const TONES = ['#00854a', '#d58be6', '#2b2b2b', '#1f6b45', '#b56fc8']
 
 export default function Photo({
   src,

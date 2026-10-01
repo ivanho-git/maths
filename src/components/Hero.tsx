@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
+import { Megaphone, PaperPlane } from './Doodles'
 
 type Line = { word: string; note?: string[]; align?: 'left' | 'right' }
 
@@ -50,7 +51,9 @@ export default function Hero() {
   }, [])
 
   return (
-    <section id="top" style={{ paddingTop: 88 }}>
+    <section id="top" style={{ paddingTop: 88, position: 'relative' }}>
+      <Megaphone size={170} style={{ position: 'absolute', right: '6vw', top: 150, transform: 'rotate(-8deg)' }} />
+      <PaperPlane size={130} style={{ position: 'absolute', right: '22vw', top: '68vh' }} />
       <div className="wrap">
         <h1 style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)' }}>
           The 180 Degrees Consulting Newsletter

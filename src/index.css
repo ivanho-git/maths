@@ -1,12 +1,16 @@
-@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Anton&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 :root {
-  --cream: #fef6e5;
-  --red: #ff4552;
-  --red-soft: rgba(255, 69, 82, 0.12);
-  --serif: 'Bodoni Moda', 'Didot', 'Times New Roman', serif;
+  --cream: #f3ede8;
+  --red: #00854a; /* brand green (kept var name for existing components) */
+  --green: #00854a;
+  --lilac: #d58be6;
+  --ink: #2b2b2b;
+  --red-soft: rgba(0, 133, 74, 0.12);
+  --serif: 'Anton', 'Impact', sans-serif;
   --sans: 'Inter', system-ui, sans-serif;
+  --shadow: 3px 3px 0 var(--ink);
 }
 
 * { box-sizing: border-box; }
@@ -14,27 +18,28 @@ html { scroll-behavior: smooth; }
 body {
   margin: 0;
   background: var(--cream);
-  color: var(--red);
+  color: var(--ink);
   font-family: var(--sans);
   -webkit-font-smoothing: antialiased;
 }
 #root { overflow-x: clip; }
-::selection { background: var(--red); color: var(--cream); }
+::selection { background: var(--green); color: #fff; }
 
 .wrap { width: 100%; max-width: 1340px; margin: 0 auto; padding: 0 66px; }
 @media (max-width: 800px) { .wrap { padding: 0 22px; } }
 
-.serif { font-family: var(--serif); font-weight: 500; text-transform: uppercase; line-height: 0.92; letter-spacing: -0.01em; }
+.serif { font-family: var(--serif); font-weight: 400; text-transform: none; line-height: 0.95; letter-spacing: -0.01em; }
 .caps { text-transform: uppercase; letter-spacing: 0.3em; font-size: 12px; }
 
 .pill {
   display: inline-flex; align-items: center; gap: 12px;
-  border: 1px solid var(--red); border-radius: 999px;
-  padding: 14px 26px; color: var(--red); text-decoration: none;
-  font-size: 14px; font-weight: 500; background: transparent; cursor: pointer;
-  transition: background .3s, color .3s;
+  border: 1.5px solid var(--ink); border-radius: 999px;
+  padding: 13px 24px; color: var(--ink); text-decoration: none;
+  font-size: 14px; font-weight: 500; background: #fff; cursor: pointer;
+  box-shadow: var(--shadow); text-transform: uppercase;
+  transition: transform .15s, box-shadow .15s;
 }
-.pill:hover { background: var(--red); color: var(--cream); }
+.pill:hover { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
 
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { scrollbar-width: none; }

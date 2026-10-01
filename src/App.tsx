@@ -11,7 +11,7 @@ function App() {
 
   return (
     <>
-      {!isArticles && <Header />}
+      <Header />
       {isArticles ? (
         <Articles />
       ) : (
