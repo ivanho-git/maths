@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Logo } from './Header'
+import { HeartBubble, Mug, Sparkle } from './Doodles'
 
 export default function Footer() {
   const [email, setEmail] = useState('')
@@ -9,7 +9,10 @@ export default function Footer() {
   return (
     <footer id="subscribe">
       <div className="wrap">
-        <div style={{ background: 'var(--ink)', color: '#fff', borderRadius: 28, padding: '100px 48px 80px', margin: '120px 0 40px', textAlign: 'center' }}>
+        <div style={{ background: 'var(--ink)', color: '#fff', borderRadius: 28, padding: '100px 48px 80px', margin: '120px 0 40px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+          <HeartBubble size={100} style={{ position: 'absolute', left: '6%', top: 50, animation: 'bob 5s ease-in-out infinite' }} />
+          <Mug size={80} style={{ position: 'absolute', right: '7%', bottom: 50, animation: 'bob 6s ease-in-out infinite' }} />
+          <Sparkle size={40} style={{ position: 'absolute', right: '18%', top: 60, animation: 'bob 4s ease-in-out infinite' }} />
           <div className="serif" style={{ fontSize: 'clamp(56px, 10vw, 150px)' }}>
             {['Never miss', 'an issue'].map((t, i) => (
               <motion.div
@@ -69,7 +72,7 @@ export default function Footer() {
           }}
         >
           <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
-            <Logo size={28} />
+            <img src="/images/180dc-logo-full.png" alt="180 Degrees Consulting" width={110} style={{ borderRadius: 10, background: "#fff", padding: 6 }} />
             <div>
               <strong>180 Degrees Consulting</strong>
               <br />

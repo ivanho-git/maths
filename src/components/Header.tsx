@@ -8,13 +8,8 @@ const LINKS = [
   { href: '#subscribe', label: 'Subscribe' },
 ]
 
-export function Logo({ size = 34, color = 'var(--green)' }: { size?: number; color?: string }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 40 40" fill="none" aria-label="180 Degrees Consulting">
-      <path d="M20 4a16 16 0 1 1-16 16" stroke={color} strokeWidth="5" strokeLinecap="round" />
-      <path d="M4 10v10h10" stroke={color} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
+export function Logo({ size = 34 }: { size?: number; color?: string }) {
+  return <img src="/images/180dc-mark.png" width={size} height={size} alt="180 Degrees Consulting" style={{ display: 'block', objectFit: 'contain' }} />
 }
 
 export default function Header() {

@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { Sparkle, Globe, Pencil } from './Doodles'
 
 const STEPS = [
   {
@@ -38,7 +39,10 @@ const STEPS = [
 
 export default function Process() {
   return (
-    <section id="method" style={{ margin: '0 14px', padding: '90px 0 40px', background: 'var(--green)', color: '#fff', borderRadius: 28 }}>
+    <section id="method" style={{ margin: '0 14px', padding: '90px 0 40px', background: 'var(--green)', color: '#fff', borderRadius: 28, position: 'relative', overflow: 'hidden' }}>
+      <Globe size={90} style={{ position: 'absolute', right: '6%', top: 60, animation: 'bob 6s ease-in-out infinite' }} />
+      <Sparkle size={44} style={{ position: 'absolute', left: '46%', top: 70, animation: 'bob 4s ease-in-out infinite' }} />
+      <Pencil size={90} style={{ position: 'absolute', left: '3%', bottom: 50, animation: 'bob 7s ease-in-out infinite' }} />
       <div className="wrap">
         <div className="caps" style={{ paddingTop: 0, marginBottom: 80, color: '#fff' }}>
           How each issue is made

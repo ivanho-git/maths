@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Megaphone, PaperPlane } from './Doodles'
+import { Megaphone, PaperPlane, Sparkle, HeartBubble, Pencil, Mug, Globe, BrushStroke } from './Doodles'
 import { Strider } from './Figures'
 
 type Line = { word: string; note?: string[]; align?: 'left' | 'right' }
@@ -59,12 +59,19 @@ export default function Hero() {
       <div className="hero-band">
         <Megaphone size={120} style={{ position: 'absolute', left: '6%', top: '22%', transform: 'rotate(-14deg)' }} />
         <PaperPlane size={110} style={{ position: 'absolute', right: '8%', top: '18%' }} />
+        <HeartBubble size={86} style={{ position: 'absolute', left: '14%', top: '56%' }} />
+        <Sparkle size={40} style={{ position: 'absolute', left: '28%', top: '16%' }} />
+        <Sparkle size={30} style={{ position: 'absolute', right: '24%', top: '62%' }} />
+        <Pencil size={84} style={{ position: 'absolute', right: '12%', bottom: '18%' }} />
+        <Mug size={74} style={{ position: 'absolute', left: '9%', bottom: '10%' }} />
+        <Globe size={70} style={{ position: 'absolute', right: '30%', top: '9%' }} />
         <div style={{ position: 'relative', zIndex: 2, minHeight: 470, display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
           <AnimatePresence mode="wait">
             <div key={i}>
               {SLIDES[i].map((line, li) => (
                 <div key={line.word} style={{ lineHeight: 0.9, margin: '6px 0' }}>
-                  <span className="serif" style={{ fontSize: 'clamp(54px, 9.5vw, 150px)', color: li === 1 ? '#fff' : 'var(--ink)', background: li === 1 ? 'var(--green)' : 'none', padding: li === 1 ? '0.04em 0.14em' : 0, borderRadius: 12, display: 'inline-block' }}>
+                  <span className="serif" style={{ fontSize: 'clamp(54px, 9.5vw, 150px)', color: li === 1 ? '#fff' : 'var(--ink)', padding: li === 1 ? '0.04em 0.16em' : 0, display: 'inline-block', position: 'relative', zIndex: 0 }}>
+                    {li === 1 && <BrushStroke />}
                     <Letters text={line.word} delay={li * 0.08} />
                   </span>
                 </div>
@@ -87,6 +94,7 @@ export default function Hero() {
       </div>
 
       <style>{`
+        .hero-band > svg { animation: bob 5s ease-in-out infinite; } .hero-band > svg:nth-of-type(2n) { animation-duration: 6.5s; animation-delay: -2s; }
         .hero-band { position: relative; overflow: hidden; background: var(--lilac); border-radius: 28px; padding-top: 110px; }
         @media (max-width: 800px) { .hero-band svg:not([aria-label]) { transform: scale(.7); } }
       `}</style>
