@@ -29,7 +29,18 @@ export default function Footer() {
           </div>
 
           {done ? (
-            <p style={{ fontSize: 20, marginTop: 56 }}>Thanks — the next issue is on its way to you.</p>
+            <div style={{ position: 'relative' }}>
+              {Array.from({ length: 36 }).map((_, k) => (
+                <motion.span
+                  key={k}
+                  initial={{ x: 0, y: 0, opacity: 1, rotate: 0 }}
+                  animate={{ x: Math.cos(k * 0.7) * (120 + (k % 5) * 40), y: Math.sin(k * 0.7) * (80 + (k % 4) * 30) - 60, opacity: 0, rotate: k * 40 }}
+                  transition={{ duration: 1.4, ease: 'easeOut' }}
+                  style={{ position: 'absolute', left: '50%', top: 30, width: 12, height: 12, borderRadius: k % 3 ? 2 : 6, background: ['var(--green)', 'var(--lilac)', '#fff'][k % 3], border: '1.5px solid var(--ink)' }}
+                />
+              ))}
+              <motion.p initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: 'spring', stiffness: 300, damping: 12 }} className="serif" style={{ fontSize: 34, marginTop: 56 }}>You're in! See you in your inbox 🎉</motion.p>
+            </div>
           ) : (
             <form
               onSubmit={(e) => {

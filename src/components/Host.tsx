@@ -53,8 +53,7 @@ export function Host({ size = 300, style }: P) {
       />
       {/* glasses */}
       <Draw d="M116 132 a16 16 0 1 0 32 0 a16 16 0 1 0 -32 0 M156 132 a16 16 0 1 0 32 0 a16 16 0 1 0 -32 0 M148 130 h8" delay={0.6} strokeWidth={4} />
-      <circle cx="132" cy="134" r="3.5" fill="var(--ink)" />
-      <circle cx="172" cy="134" r="3.5" fill="var(--ink)" />
+      <g className="blink"><circle cx="132" cy="134" r="3.5" fill="var(--ink)" /><circle cx="172" cy="134" r="3.5" fill="var(--ink)" /></g>
       {/* nose + smile */}
       <Draw d="M152 146 C146 156 150 162 158 160" delay={0.8} strokeWidth={4} />
       <Draw d="M134 174 C144 186 164 186 174 172" delay={0.9} strokeWidth={4} />

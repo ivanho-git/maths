@@ -88,6 +88,12 @@ export default function Hero() {
         </div>
       </div>
 
+      <div className="ticker" aria-hidden>
+        <div className="ticker-track">
+          {[0, 1].flatMap(r => ["Impact stories", "✦", "Chapter news", "✦", "Free toolkits", "✦", "Pro bono, always", "✦", "Student-run", "✦", "One email a month", "✦"].map((w, i) => <span key={`${r}-${i}`}>{w}</span>))}
+        </div>
+      </div>
+
       <div className="wrap" style={{ padding: '110px 0 140px', textAlign: 'center' }}>
         <p className="serif" style={{ fontSize: 'clamp(28px, 3.6vw, 52px)', lineHeight: 1.08, maxWidth: 1000, margin: '0 auto' }}>
           180 Degrees Consulting is the world's largest student-run consultancy, pairing university teams with nonprofits and social enterprises at no cost.

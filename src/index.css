@@ -46,3 +46,14 @@ body {
 
 @keyframes bob { 0%,100% { translate: 0 0; rotate: 0deg; } 50% { translate: 0 -10px; rotate: 4deg; } }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+
+.wiggle { transition: transform .2s; cursor: grab; }
+.pop-doodle:hover .wiggle { animation: wiggle .5s ease-in-out infinite; }
+@keyframes wiggle { 0%,100% { transform: rotate(0) scale(1.08); } 25% { transform: rotate(-12deg) scale(1.12); } 75% { transform: rotate(12deg) scale(1.12); } }
+.blink { transform-box: fill-box; transform-origin: center; animation: blink 4s infinite; }
+@keyframes blink { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
+.ticker { overflow: hidden; background: var(--ink); color: #fff; border-radius: 999px; margin: 18px 14px 0; border: 1.5px solid var(--ink); box-shadow: var(--shadow); transform: rotate(-1.2deg); }
+.ticker-track { display: flex; gap: 40px; width: max-content; padding: 16px 0; animation: ticker 26s linear infinite; font-family: var(--serif); font-size: 26px; white-space: nowrap; }
+.ticker-track span:nth-child(odd) { color: var(--lilac); }
+.ticker:hover .ticker-track { animation-play-state: paused; }
+@keyframes ticker { to { transform: translateX(-50%); } }

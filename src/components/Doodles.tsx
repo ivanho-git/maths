@@ -91,9 +91,10 @@ export function Pop({ children, style, delay = 0 }: { children: React.ReactNode;
       whileInView={{ scale: 1, rotate: 0, opacity: 1 }}
       viewport={{ once: true }}
       transition={{ type: 'spring', stiffness: 260, damping: 14, delay }}
-      style={{ position: 'absolute', pointerEvents: 'none', ...style }}
+      style={{ position: 'absolute', ...style }}
+      className="pop-doodle"
     >
-      <div style={{ animation: `bob ${4 + (delay * 10) % 3}s ease-in-out infinite` }}>{children}</div>
+      <div style={{ animation: `bob ${4 + (delay * 10) % 3}s ease-in-out infinite` }}><div className="wiggle">{children}</div></div>
     </motion.div>
   )
 }
