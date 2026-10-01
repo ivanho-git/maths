@@ -7,11 +7,13 @@ export default function Photo({
   caption,
   index = 0,
   ratio = '4/3',
+  fit = 'cover',
 }: {
   src?: string
   caption: string
   index?: number
   ratio?: string
+  fit?: 'cover' | 'contain'
 }) {
   return (
     <motion.figure
@@ -25,12 +27,12 @@ export default function Photo({
         style={{
           aspectRatio: ratio,
           overflow: 'hidden',
-          background: TONES[index % TONES.length],
+          background: src && fit === 'contain' ? '#fff' : TONES[index % TONES.length],
           position: 'relative',
         }}
       >
         {src ? (
-          <img src={src} alt={caption} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+          <img src={src} alt={caption} style={{ width: '100%', height: '100%', objectFit: fit, padding: fit === 'contain' ? '8%' : 0, display: 'block' }} />
         ) : (
           <div
             style={{

@@ -12,9 +12,10 @@ const SECTIONS = [
     ],
     link: 'Read the latest story',
     photos: [
-      'A youth-literacy nonprofit rethinking how it recruits volunteer tutors.',
-      'Final presentation day: twelve weeks of research squeezed into twenty slides.',
-      'Mapping donor journeys on a whiteboard that has seen better days.',
+      { caption: 'Adigo — strategy support for a growing client.', src: '/images/adigo.png', fit: 'contain' as const },
+      { caption: 'Buy Food with Plastic — helping a circular-economy initiative scale.', src: '/images/buy-food-with-plastic.png', fit: 'contain' as const },
+      { caption: 'JOY Superapps — go-to-market thinking for a consumer app.', src: '/images/joy-superapps.png', fit: 'contain' as const },
+      { caption: 'Concept board: an AI-assisted smart-farming system mapped end to end.', src: '/images/agri-robot-concept.png' },
     ],
   },
   {
@@ -108,11 +109,14 @@ export default function Coverage() {
                 scrollSnapType: 'x mandatory',
               }}
             >
-              {s.photos.map((c, i) => (
-                <div key={c} style={{ scrollSnapAlign: 'start' }}>
-                  <Photo caption={c} index={i} />
+              {s.photos.map((p, i) => {
+                const c = typeof p === 'string' ? { caption: p } : p
+                return (
+                <div key={c.caption} style={{ scrollSnapAlign: 'start' }}>
+                  <Photo caption={c.caption} src={'src' in c ? c.src : undefined} fit={'fit' in c ? c.fit : 'cover'} index={i} />
                 </div>
-              ))}
+                )
+              })}
             </div>
           </div>
         ))}
