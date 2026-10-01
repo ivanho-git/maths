@@ -1,114 +1,73 @@
 import { motion } from 'framer-motion'
+import Photo from './Photo'
 
 const POINTS = [
   {
-    title: 'Global Network',
-    body: 'Insights pulled from 180+ chapters across 38 countries, not just one office or one market.',
+    title: 'Global',
+    body: 'Stories come from every corner of the network, so you hear how the same nonprofit challenge looks in Sydney, São Paulo and Seoul.',
   },
   {
-    title: 'Always Free',
-    body: 'The newsletter, the toolkits, and the consulting itself stay free for every nonprofit we work with.',
+    title: 'Practical',
+    body: 'Every issue includes at least one template or framework you can put to work the same week — no theory without a takeaway.',
   },
   {
-    title: 'Practical Tools',
-    body: 'Every issue ships at least one template or framework you can apply the same week.',
+    title: 'Honest',
+    body: 'We publish what worked and what did not. Failed hypotheses teach as much as successful ones, so we keep both in.',
   },
   {
-    title: 'Community-Built',
-    body: 'Written by the volunteers running the projects — not a marketing team.',
+    title: 'Free',
+    body: 'Our consulting is pro bono and so is the newsletter. No paywall, no premium tier, no selling your email address.',
   },
 ]
 
 const GALLERY = [
-  { label: 'Strategy workshop', tone: 'linear-gradient(135deg,#10192f,#2a3a63)' },
-  { label: 'Chapter kickoff', tone: 'linear-gradient(135deg,#ff5a36,#ffb199)' },
-  { label: 'Client presentation', tone: 'linear-gradient(135deg,#1c2944,#ff5a36)' },
-  { label: 'Global summit', tone: 'linear-gradient(135deg,#ffb199,#10192f)' },
+  'Consultants and client staff working through a problem tree together.',
+  'Late-night slide polishing before a board presentation.',
+  'Chapter presidents comparing notes at the annual meetup.',
+  'A field visit to see the programme the team was advising on.',
+  'Celebrating the end of a project cycle.',
+  'New members on their first training weekend.',
 ]
 
 export default function Differentiators() {
   return (
-    <section id="why" style={{ padding: '120px 0' }}>
-      <div className="container-x">
-        <p
-          style={{
-            fontSize: 14,
-            fontWeight: 700,
-            color: 'var(--ink-soft)',
-            letterSpacing: 0.4,
-            textTransform: 'uppercase',
-            marginBottom: 16,
-          }}
-        >
-          Why subscribe
-        </p>
-        <h2
-          style={{
-            fontSize: 'clamp(30px, 4.5vw, 48px)',
-            fontWeight: 700,
-            letterSpacing: -1.2,
-            maxWidth: 680,
-            marginBottom: 56,
-          }}
-        >
-          What makes this newsletter different
-        </h2>
+    <section id="why" style={{ padding: '40px 0 120px' }}>
+      <div className="wrap">
+        <div className="caps" style={{ borderTop: '1px solid var(--red)', paddingTop: 22, marginBottom: 80 }}>
+          Why read us
+        </div>
 
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-            gap: 40,
-            marginBottom: 88,
+            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+            gap: '64px 80px',
+            marginBottom: 120,
           }}
         >
-          {POINTS.map((point, i) => (
+          {POINTS.map((p, i) => (
             <motion.div
-              key={point.title}
-              initial={{ opacity: 0, y: 24 }}
+              key={p.title}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-10%' }}
-              transition={{ duration: 0.55, delay: i * 0.08 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: (i % 2) * 0.12 }}
             >
-              <h3 style={{ fontSize: 20, fontWeight: 700, margin: '0 0 10px', color: 'var(--ink)' }}>
-                {point.title}
-              </h3>
-              <p style={{ fontSize: 15.5, lineHeight: 1.7, color: 'var(--ink-soft)', margin: 0 }}>
-                {point.body}
-              </p>
+              <h2 className="serif" style={{ fontSize: 'clamp(44px, 5.5vw, 76px)', margin: '0 0 20px' }}>{p.title}</h2>
+              <p style={{ fontSize: 16, lineHeight: 1.65, margin: 0, maxWidth: 440 }}>{p.body}</p>
             </motion.div>
           ))}
         </div>
 
-        <div
-          id="chapters"
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-            gap: 20,
-          }}
-        >
-          {GALLERY.map((g, i) => (
-            <motion.div
-              key={g.label}
-              initial={{ opacity: 0, scale: 0.96 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true, margin: '-10%' }}
-              transition={{ duration: 0.5, delay: i * 0.07 }}
-              style={{
-                aspectRatio: '4/3',
-                borderRadius: 16,
-                background: g.tone,
-                display: 'flex',
-                alignItems: 'flex-end',
-                padding: 18,
-              }}
-            >
-              <span style={{ color: '#fff', fontSize: 14, fontWeight: 600 }}>{g.label}</span>
-            </motion.div>
+        <div className="gallery" style={{ columnCount: 3, columnGap: 32 }}>
+          {GALLERY.map((c, i) => (
+            <div key={c} style={{ breakInside: 'avoid', marginBottom: 40 }}>
+              <Photo caption={c} index={i} ratio={i % 3 === 1 ? '3/4' : i % 2 ? '1/1' : '4/3'} />
+            </div>
           ))}
         </div>
       </div>
+      <style>{`@media (max-width: 900px){ .gallery{ column-count: 2 !important; } } @media (max-width: 560px){ .gallery{ column-count: 1 !important; } }`}</style>
     </section>
   )
 }

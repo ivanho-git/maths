@@ -1,179 +1,123 @@
-import { useEffect, useRef, useState } from 'react'
-import { motion, useInView } from 'framer-motion'
+import { motion } from 'framer-motion'
+import Photo from './Photo'
 
-const ITEMS = [
+const SECTIONS = [
   {
-    index: '1.',
-    kicker: 'Real projects, real outcomes',
-    title: 'Impact Stories',
-    body: "Deep dives into recently wrapped consulting engagements — the brief the chapter received, the strategy the student team built, and the measurable change it created for the nonprofit or social enterprise.",
-    gradient: 'linear-gradient(135deg, #10192f 0%, #1c2944 55%, #ff5a36 150%)',
+    n: '1.',
+    kicker: 'Case studies, results, lessons learned',
+    title: ['Impact', 'Stories'],
+    body: [
+      'Each month we pick one finished engagement and take it apart: what the client was wrestling with, how the student team scoped the problem, and what actually changed once the recommendations landed.',
+      <>Expect honest write-ups — including the parts that didn't go to plan — plus the <strong>numbers</strong> and <strong>client quotes</strong> behind every outcome.</>,
+    ],
+    link: 'Read the latest story',
+    photos: [
+      'A youth-literacy nonprofit rethinking how it recruits volunteer tutors.',
+      'Final presentation day: twelve weeks of research squeezed into twenty slides.',
+      'Mapping donor journeys on a whiteboard that has seen better days.',
+    ],
   },
   {
-    index: '2.',
-    kicker: 'News from 38 countries',
-    title: 'Chapter Spotlights',
-    body: "A rotating look at university chapters around the globe: new partnerships, recruitment drives, leadership transitions, and the local causes each team is rallying behind this term.",
-    gradient: 'linear-gradient(135deg, #ff5a36 0%, #ffb199 55%, #10192f 150%)',
+    n: '2.',
+    kicker: 'Recruitment, events, local partners',
+    title: ['Chapter', 'Spotlights'],
+    body: [
+      'With teams on campuses around the world, something is always happening. We hand the mic to a different chapter every issue so they can share what they are building and who they are building it with.',
+      <>From <strong>first-ever cohorts</strong> to chapters celebrating their hundredth project, this is where the network gets to know itself.</>,
+    ],
+    link: 'Nominate your chapter',
+    photos: [
+      'Welcome night for a brand-new cohort of consultants.',
+      'Regional leadership summit — mostly strategy, partly snacks.',
+      'Two chapters, two continents, one shared project call.',
+    ],
   },
   {
-    index: '3.',
-    kicker: 'Frameworks you can reuse',
-    title: 'Resources & Toolkits',
-    body: "Hand-picked consulting frameworks, discovery-call scripts, and stakeholder-mapping templates that our own teams rely on — simplified so any volunteer or nonprofit leader can put them to use.",
-    gradient: 'linear-gradient(135deg, #1c2944 0%, #10192f 55%, #ffb199 150%)',
+    n: '3.',
+    kicker: 'Templates, frameworks, how-to guides',
+    title: ['Tools &', 'Toolkits'],
+    body: [
+      'The frameworks our teams lean on every week, cleaned up and shared openly. Stakeholder maps, interview guides, scoping checklists — ready to copy into your next project.',
+      <>Built for <strong>student consultants</strong> and <strong>nonprofit leaders</strong> alike, with zero jargon and no paywall.</>,
+    ],
+    link: 'Browse the toolkit',
+    photos: [
+      'The one-page scoping canvas every new team starts with.',
+      'Sticky notes: still undefeated as a prioritisation tool.',
+      'Interview prep before a round of beneficiary conversations.',
+    ],
   },
 ]
 
-function CoverageRow({
-  item,
-  onActive,
-}: {
-  item: (typeof ITEMS)[number]
-  onActive: () => void
-}) {
-  const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { margin: '-40% 0px -40% 0px' })
-
-  useEffect(() => {
-    if (inView) onActive()
-  }, [inView, onActive])
-
-  return (
-    <div ref={ref} style={{ minHeight: '70vh', display: 'flex', alignItems: 'center' }}>
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-10% 0px -10% 0px' }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <div
-          style={{
-            fontSize: 14,
-            fontWeight: 700,
-            color: 'var(--coral)',
-            letterSpacing: 0.4,
-            textTransform: 'uppercase',
-            marginBottom: 12,
-          }}
-        >
-          {item.index} {item.kicker}
-        </div>
-        <h3
-          style={{
-            fontSize: 'clamp(28px, 4vw, 42px)',
-            fontWeight: 700,
-            letterSpacing: -1,
-            margin: '0 0 18px',
-            color: 'var(--ink)',
-          }}
-        >
-          {item.title}
-        </h3>
-        <p
-          style={{
-            fontSize: 17,
-            lineHeight: 1.7,
-            color: 'var(--ink-soft)',
-            maxWidth: 480,
-            margin: 0,
-          }}
-        >
-          {item.body}
-        </p>
-      </motion.div>
-    </div>
-  )
-}
-
 export default function Coverage() {
-  const [active, setActive] = useState(0)
-
   return (
-    <section id="coverage" style={{ padding: '120px 0' }}>
-      <div className="container-x">
-        <p
-          style={{
-            fontSize: 14,
-            fontWeight: 700,
-            color: 'var(--ink-soft)',
-            letterSpacing: 0.4,
-            textTransform: 'uppercase',
-            marginBottom: 16,
-          }}
-        >
-          What's inside
-        </p>
-        <h2
-          style={{
-            fontSize: 'clamp(30px, 4.5vw, 48px)',
-            fontWeight: 700,
-            letterSpacing: -1.2,
-            maxWidth: 680,
-            marginBottom: 72,
-          }}
-        >
-          Three sections, every single issue
-        </h2>
+    <section id="coverage" style={{ paddingBottom: 80 }}>
+      <div className="wrap">
+        <div className="caps" style={{ borderTop: '1px solid var(--red)', paddingTop: 22, marginBottom: 80 }}>
+          What's inside?
+        </div>
 
-        <div
-          className="coverage-grid"
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: 80,
-          }}
-        >
-          <div>
-            {ITEMS.map((item, i) => (
-              <CoverageRow key={item.title} item={item} onActive={() => setActive(i)} />
-            ))}
-          </div>
-
-          <div className="coverage-sticky" style={{ position: 'relative' }}>
-            <div style={{ position: 'sticky', top: '18vh', height: '64vh' }}>
-              {ITEMS.map((item, i) => (
-                <motion.div
-                  key={item.title}
-                  animate={{ opacity: active === i ? 1 : 0 }}
-                  transition={{ duration: 0.5 }}
+        {SECTIONS.map((s) => (
+          <div key={s.n} style={{ marginBottom: 160 }}>
+            <div className="svc-grid" style={{ display: 'grid', gridTemplateColumns: '140px 1fr', gap: 24 }}>
+              <div className="serif" style={{ fontSize: 'clamp(40px, 6vw, 84px)' }}>{s.n}</div>
+              <div>
+                <div style={{ fontSize: 14, marginBottom: 22 }}>{s.kicker}</div>
+                <h2 className="serif" style={{ fontSize: 'clamp(48px, 7vw, 96px)', margin: '0 0 56px' }}>
+                  {s.title.map((t, i) => (
+                    <motion.span
+                      key={t}
+                      initial={{ opacity: 0, y: 40 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.8, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                      style={{ display: 'block', paddingLeft: i === 1 ? '1.2em' : 0 }}
+                    >
+                      {t}
+                    </motion.span>
+                  ))}
+                </h2>
+                <div
                   style={{
-                    position: 'absolute',
-                    inset: 0,
-                    borderRadius: 24,
-                    background: item.gradient,
-                    display: 'flex',
-                    alignItems: 'flex-end',
-                    padding: 36,
-                    overflow: 'hidden',
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                    gap: 40,
+                    fontSize: 16,
+                    lineHeight: 1.65,
                   }}
                 >
-                  <svg
-                    width="100%"
-                    height="100%"
-                    style={{ position: 'absolute', inset: 0, opacity: 0.25 }}
-                    viewBox="0 0 400 400"
-                    fill="none"
-                  >
-                    <circle cx="340" cy="60" r="140" stroke="white" strokeWidth="1.5" />
-                    <circle cx="40" cy="340" r="100" stroke="white" strokeWidth="1.5" />
-                  </svg>
-                  <div style={{ color: '#fff', fontSize: 64, fontWeight: 800, opacity: 0.85 }}>
-                    {item.index}
-                  </div>
-                </motion.div>
+                  {s.body.map((p, i) => (
+                    <p key={i} style={{ margin: 0 }}>{p}</p>
+                  ))}
+                </div>
+                <a href="#subscribe" className="pill" style={{ marginTop: 40 }}>
+                  {s.link} <span aria-hidden>→</span>
+                </a>
+              </div>
+            </div>
+
+            <div
+              className="no-scrollbar"
+              style={{
+                display: 'grid',
+                gridAutoFlow: 'column',
+                gridAutoColumns: 'minmax(300px, 40%)',
+                gap: 32,
+                overflowX: 'auto',
+                marginTop: 90,
+                scrollSnapType: 'x mandatory',
+              }}
+            >
+              {s.photos.map((c, i) => (
+                <div key={c} style={{ scrollSnapAlign: 'start' }}>
+                  <Photo caption={c} index={i} />
+                </div>
               ))}
             </div>
           </div>
-        </div>
+        ))}
       </div>
-
-      <style>{`
-        @media (max-width: 900px) {
-          .coverage-grid { grid-template-columns: 1fr !important; gap: 40px !important; }
-          .coverage-sticky { display: none; }
-        }
-      `}</style>
+      <style>{`@media (max-width: 800px){ .svc-grid{ grid-template-columns: 1fr !important; } }`}</style>
     </section>
   )
 }

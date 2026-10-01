@@ -1,188 +1,109 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 
-const NAV_LINKS = [
-  { href: '#coverage', label: 'Newsletter' },
-  { href: '#process', label: 'How It Works' },
-  { href: '#why', label: 'Why Subscribe' },
-  { href: '#chapters', label: 'Chapters' },
+const LINKS = [
+  { href: '#coverage', label: 'Inside the issue' },
+  { href: '#method', label: 'Our method' },
+  { href: '#why', label: 'Why read us' },
+  { href: '#subscribe', label: 'Subscribe' },
 ]
 
-export default function Header() {
-  const [scrolled, setScrolled] = useState(false)
-  const [menuOpen, setMenuOpen] = useState(false)
+export function Logo({ size = 34 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 40 40" fill="none" aria-label="180 Degrees Consulting">
+      <path d="M20 4a16 16 0 1 1-16 16" stroke="var(--red)" strokeWidth="5" strokeLinecap="round" />
+      <path d="M4 10v10h10" stroke="var(--red)" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24)
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+export default function Header() {
+  const [open, setOpen] = useState(false)
 
   return (
-    <header
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 50,
-        transition: 'background 0.3s ease, box-shadow 0.3s ease',
-        background: scrolled ? 'rgba(251,250,248,0.92)' : 'transparent',
-        backdropFilter: scrolled ? 'blur(10px)' : 'none',
-        boxShadow: scrolled ? '0 1px 0 var(--line)' : 'none',
-      }}
-    >
-      <div
-        className="container-x"
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          height: 76,
-        }}
-      >
-        <a
-          href="#top"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 10,
-            textDecoration: 'none',
-            color: 'var(--ink)',
-            fontWeight: 700,
-            fontSize: 18,
-          }}
-        >
-          <span
+    <>
+      <header style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 60, background: 'var(--cream)' }}>
+        <div className="wrap">
+          <div
             style={{
-              width: 32,
-              height: 32,
-              borderRadius: '50%',
-              background: 'var(--navy)',
-              color: '#fff',
-              display: 'flex',
+              display: 'grid',
+              gridTemplateColumns: '1fr auto 1fr',
               alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: 11,
-              fontWeight: 800,
+              height: 88,
+              borderBottom: '1px solid var(--red)',
             }}
           >
-            180
-          </span>
-          180° Consulting
-          <span style={{ color: 'var(--coral)', fontWeight: 600 }}>
-            Newsletter
-          </span>
-        </a>
-
-        <nav
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 32,
-          }}
-          className="desktop-nav"
-        >
-          {NAV_LINKS.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              style={{
-                color: 'var(--ink-soft)',
-                textDecoration: 'none',
-                fontSize: 15,
-                fontWeight: 500,
-              }}
-            >
-              {link.label}
+            <a href="#top" style={{ display: 'flex' }}>
+              <Logo />
             </a>
-          ))}
-          <a
-            href="#subscribe"
-            style={{
-              background: 'var(--coral)',
-              color: '#fff',
-              padding: '10px 20px',
-              borderRadius: 999,
-              fontSize: 14,
-              fontWeight: 600,
-              textDecoration: 'none',
-            }}
-          >
-            Subscribe
-          </a>
-        </nav>
-
-        <button
-          type="button"
-          onClick={() => setMenuOpen((v) => !v)}
-          className="mobile-nav-toggle"
-          aria-label="Toggle menu"
-          style={{
-            display: 'none',
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            padding: 8,
-          }}
-        >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M3 6h18M3 12h18M3 18h18"
-              stroke="var(--ink)"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-          </svg>
-        </button>
-      </div>
-
-      {menuOpen && (
-        <div
-          className="container-x"
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 16,
-            paddingBottom: 24,
-            background: 'var(--paper)',
-          }}
-        >
-          {NAV_LINKS.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              onClick={() => setMenuOpen(false)}
-              style={{ color: 'var(--ink)', textDecoration: 'none', fontSize: 16, fontWeight: 500 }}
-            >
-              {link.label}
-            </a>
-          ))}
-          <a
-            href="#subscribe"
-            onClick={() => setMenuOpen(false)}
-            style={{
-              background: 'var(--coral)',
-              color: '#fff',
-              padding: '12px 20px',
-              borderRadius: 999,
-              fontSize: 14,
-              fontWeight: 600,
-              textDecoration: 'none',
-              textAlign: 'center',
-            }}
-          >
-            Subscribe
-          </a>
+            <span className="caps" style={{ fontSize: 11 }}>The 180° Newsletter</span>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 28 }}>
+              <span
+                style={{
+                  border: '1px solid var(--red)',
+                  borderRadius: 999,
+                  padding: '6px 14px',
+                  fontSize: 14,
+                  fontWeight: 600,
+                }}
+              >
+                EN
+              </span>
+              <button
+                type="button"
+                aria-label="Open menu"
+                onClick={() => setOpen(true)}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex' }}
+              >
+                <svg width="22" height="18" viewBox="0 0 22 18">
+                  <path d="M0 1h22M0 9h22M0 17h22" stroke="var(--red)" strokeWidth="2" />
+                </svg>
+              </button>
+            </div>
+          </div>
         </div>
-      )}
+      </header>
 
-      <style>{`
-        @media (max-width: 860px) {
-          .desktop-nav { display: none !important; }
-          .mobile-nav-toggle { display: inline-flex !important; }
-        }
-      `}</style>
-    </header>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ clipPath: 'inset(0 0 100% 0)' }}
+            animate={{ clipPath: 'inset(0 0 0% 0)' }}
+            exit={{ clipPath: 'inset(0 0 100% 0)' }}
+            transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
+            style={{ position: 'fixed', inset: 0, zIndex: 70, background: 'var(--red)', color: 'var(--cream)' }}
+          >
+            <div className="wrap" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', height: 88, alignItems: 'center' }}>
+                <button
+                  type="button"
+                  aria-label="Close menu"
+                  onClick={() => setOpen(false)}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--cream)', fontSize: 34 }}
+                >
+                  ×
+                </button>
+              </div>
+              <nav style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: '6vh' }}>
+                {LINKS.map((l, i) => (
+                  <motion.a
+                    key={l.href}
+                    href={l.href}
+                    onClick={() => setOpen(false)}
+                    initial={{ y: 60, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.25 + i * 0.07, duration: 0.6 }}
+                    className="serif"
+                    style={{ color: 'var(--cream)', textDecoration: 'none', fontSize: 'clamp(44px, 8vw, 104px)' }}
+                  >
+                    {l.label}
+                  </motion.a>
+                ))}
+              </nav>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   )
 }

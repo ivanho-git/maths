@@ -1,163 +1,117 @@
-import { motion } from 'framer-motion'
+import { useEffect, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  show: (delay = 0) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] },
-  }),
+type Line = { word: string; note?: string[]; align?: 'left' | 'right' }
+
+const SLIDES: Line[][] = [
+  [
+    { word: 'Change', note: ['Chapters', '180+'] },
+    { word: 'Starts', note: ['Across', '38 countries'], align: 'left' },
+    { word: 'On campus', note: ['Since', '2007'] },
+  ],
+  [
+    { word: 'Students' },
+    { word: 'Solving', note: ['Pro bono', 'for every client'] },
+    { word: 'Real' },
+    { word: 'Problems' },
+  ],
+  [
+    { word: 'Turn it' , note: ['One issue', 'a month'] },
+    { word: 'Right', note: ['Five minutes', 'to read it'], align: 'left' },
+    { word: 'Around', note: ['Zero spam', 'we promise'] },
+  ],
+]
+
+function Letters({ text, delay }: { text: string; delay: number }) {
+  return (
+    <span style={{ display: 'inline-flex', overflow: 'hidden', paddingBottom: '0.06em' }}>
+      {text.split('').map((ch, i) => (
+        <motion.span
+          key={i}
+          initial={{ y: '105%' }}
+          animate={{ y: 0 }}
+          exit={{ y: '-105%' }}
+          transition={{ duration: 0.7, delay: delay + i * 0.025, ease: [0.76, 0, 0.24, 1] }}
+          style={{ display: 'inline-block', whiteSpace: 'pre' }}
+        >
+          {ch}
+        </motion.span>
+      ))}
+    </span>
+  )
 }
 
 export default function Hero() {
+  const [i, setI] = useState(0)
+
+  useEffect(() => {
+    const t = setInterval(() => setI((v) => (v + 1) % SLIDES.length), 4200)
+    return () => clearInterval(t)
+  }, [])
+
   return (
-    <section
-      id="top"
-      style={{
-        position: 'relative',
-        paddingTop: 170,
-        paddingBottom: 100,
-        overflow: 'hidden',
-        background:
-          'radial-gradient(circle at 15% 20%, rgba(255,90,54,0.10), transparent 45%), radial-gradient(circle at 85% 0%, rgba(16,25,47,0.06), transparent 40%)',
-      }}
-    >
-      <div className="container-x">
-        <motion.p
-          initial="hidden"
-          animate="show"
-          variants={fadeUp}
-          custom={0}
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 8,
-            padding: '6px 14px',
-            borderRadius: 999,
-            border: '1px solid var(--line)',
-            fontSize: 13,
-            fontWeight: 600,
-            letterSpacing: 0.4,
-            textTransform: 'uppercase',
-            color: 'var(--coral)',
-            background: 'var(--coral-soft)',
-            marginBottom: 28,
-          }}
-        >
-          The 180° Consulting Newsletter
-        </motion.p>
+    <section id="top" style={{ paddingTop: 88 }}>
+      <div className="wrap">
+        <h1 style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)' }}>
+          The 180 Degrees Consulting Newsletter
+        </h1>
+        <div style={{ minHeight: '78vh', display: 'flex', alignItems: 'center', padding: '48px 0' }}>
+          <AnimatePresence mode="wait">
+            <div key={i} style={{ width: '100%' }}>
+              {SLIDES[i].map((line, li) => (
+                <div
+                  key={line.word}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 28,
+                    flexDirection: line.align === 'left' ? 'row-reverse' : 'row',
+                    justifyContent: line.align === 'left' ? 'flex-end' : 'flex-start',
+                  }}
+                >
+                  <span className="serif" style={{ fontSize: 'clamp(56px, 11.5vw, 170px)' }}>
+                    <Letters text={line.word} delay={li * 0.08} />
+                  </span>
+                  {line.note && (
+                    <motion.span
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ delay: 0.5 + li * 0.1 }}
+                      style={{ fontSize: 11, textTransform: 'uppercase', lineHeight: 1.4, letterSpacing: 0.4 }}
+                    >
+                      {line.note[0]}
+                      <br />
+                      <strong>{line.note[1]}</strong>
+                    </motion.span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </AnimatePresence>
+        </div>
 
-        <motion.h1
-          initial="hidden"
-          animate="show"
-          variants={fadeUp}
-          custom={0.1}
-          style={{
-            fontSize: 'clamp(40px, 6vw, 76px)',
-            lineHeight: 1.04,
-            letterSpacing: -1.5,
-            fontWeight: 700,
-            margin: 0,
-            maxWidth: 820,
-            color: 'var(--ink)',
-          }}
-        >
-          We turn student insight into
-          <span style={{ color: 'var(--coral)' }}> nonprofit impact</span>
-        </motion.h1>
-
-        <motion.p
-          initial="hidden"
-          animate="show"
-          variants={fadeUp}
-          custom={0.22}
-          style={{
-            fontSize: 19,
-            lineHeight: 1.6,
-            color: 'var(--ink-soft)',
-            maxWidth: 560,
-            marginTop: 28,
-          }}
-        >
-          Every month we round up project case studies, chapter news and free
-          consulting toolkits from the world's largest student-run
-          consultancy — delivered straight to your inbox.
-        </motion.p>
-
-        <motion.div
-          initial="hidden"
-          animate="show"
-          variants={fadeUp}
-          custom={0.32}
-          style={{ display: 'flex', gap: 14, marginTop: 36, flexWrap: 'wrap' }}
-        >
-          <a
-            href="#subscribe"
-            style={{
-              background: 'var(--navy)',
-              color: '#fff',
-              padding: '14px 28px',
-              borderRadius: 999,
-              fontWeight: 600,
-              fontSize: 15,
-              textDecoration: 'none',
-            }}
-          >
-            Subscribe for free
-          </a>
-          <a
-            href="#coverage"
-            style={{
-              border: '1px solid var(--line)',
-              color: 'var(--ink)',
-              padding: '14px 28px',
-              borderRadius: 999,
-              fontWeight: 600,
-              fontSize: 15,
-              textDecoration: 'none',
-            }}
-          >
-            See what's inside
-          </a>
-        </motion.div>
-
-        <motion.div
-          initial="hidden"
-          animate="show"
-          variants={fadeUp}
-          custom={0.44}
+        <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
-            gap: 28,
-            marginTop: 72,
-            maxWidth: 760,
-            borderTop: '1px solid var(--line)',
-            paddingTop: 32,
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: 48,
+            padding: '40px 0 120px',
+            fontSize: 22,
+            lineHeight: 1.5,
           }}
         >
-          {[
-            { value: '38', label: 'Countries with active chapters' },
-            { value: '14K+', label: 'Students volunteered since 2007' },
-            { value: '100%', label: 'Free consulting for nonprofits' },
-          ].map((stat) => (
-            <div key={stat.label}>
-              <div
-                style={{
-                  fontSize: 34,
-                  fontWeight: 700,
-                  color: 'var(--navy)',
-                  letterSpacing: -1,
-                }}
-              >
-                {stat.value}
-              </div>
-              <div style={{ fontSize: 14, color: 'var(--ink-soft)', marginTop: 4 }}>
-                {stat.label}
-              </div>
-            </div>
-          ))}
-        </motion.div>
+          <p style={{ margin: 0 }}>
+            <strong>180 Degrees Consulting</strong> is the world's largest
+            student-run consultancy, pairing university teams with nonprofits
+            and social enterprises — at no cost to them.
+          </p>
+          <p style={{ margin: 0 }}>
+            This newsletter is our monthly dispatch: the projects that
+            shipped, the chapters making noise, and the{' '}
+            <strong>tools you can steal</strong> for your own work.
+          </p>
+        </div>
       </div>
     </section>
   )
