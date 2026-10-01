@@ -1,94 +1,94 @@
 import { motion } from 'framer-motion'
+import { Sparkle, Globe, Pencil } from './Doodles'
 
 const STEPS = [
   {
-    num: '01',
-    title: 'Discover',
-    body: 'We gather the month\'s submissions from chapters worldwide — project wins, lessons learned, and the questions volunteers are asking.',
+    word: 'Listen',
+    body: (
+      <>
+        <strong>Every issue starts with the network.</strong> We collect
+        submissions from chapters, alumni and client organisations, and we ask
+        what people actually want to read more of. Nothing gets written until
+        we know who it is for.
+      </>
+    ),
   },
   {
-    num: '02',
-    title: 'Curate',
-    body: 'Our editorial team shortlists the stories and resources most useful to nonprofit leaders and student consultants alike.',
+    word: 'Edit',
+    body: (
+      <>
+        A small volunteer editorial team turns raw updates into short,
+        readable pieces. We cut ruthlessly, check every figure with the team
+        that produced it, and make sure each issue holds{' '}
+        <strong>one story, one spotlight and one tool</strong>.
+      </>
+    ),
   },
   {
-    num: '03',
-    title: 'Deliver',
-    body: 'One concise, well-designed email lands in your inbox — no fluff, just the updates and tools worth your five minutes.',
+    word: 'Send',
+    body: (
+      <>
+        On the first Thursday of the month the issue goes out — designed to be
+        read on a phone in under five minutes. Replies land straight in our
+        inbox, and the best ones shape what we <strong>listen</strong> for
+        next time.
+      </>
+    ),
   },
 ]
 
 export default function Process() {
   return (
-    <section
-      id="process"
-      style={{ padding: '120px 0', background: 'var(--navy)', color: '#fff' }}
-    >
-      <div className="container-x">
-        <p
-          style={{
-            fontSize: 14,
-            fontWeight: 700,
-            color: '#ff9a7f',
-            letterSpacing: 0.4,
-            textTransform: 'uppercase',
-            marginBottom: 16,
-          }}
-        >
-          How it comes together
-        </p>
-        <h2
-          style={{
-            fontSize: 'clamp(30px, 4.5vw, 48px)',
-            fontWeight: 700,
-            letterSpacing: -1.2,
-            maxWidth: 680,
-            marginBottom: 64,
-            color: '#fff',
-          }}
-        >
-          Discover, curate, deliver
-        </h2>
+    <section id="method" style={{ margin: '0 14px', padding: '90px 0 40px', background: 'var(--green)', color: '#fff', borderRadius: 28, position: 'relative', overflow: 'hidden' }}>
+      <Globe size={90} style={{ position: 'absolute', right: '6%', top: 60, animation: 'bob 6s ease-in-out infinite' }} />
+      <Sparkle size={44} style={{ position: 'absolute', left: '46%', top: 70, animation: 'bob 4s ease-in-out infinite' }} />
+      <Pencil size={90} style={{ position: 'absolute', left: '3%', bottom: 50, animation: 'bob 7s ease-in-out infinite' }} />
+      <div className="wrap">
+        <div className="caps" style={{ paddingTop: 0, marginBottom: 80, color: '#fff' }}>
+          How each issue is made
+        </div>
 
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-            gap: 48,
-          }}
-        >
-          {STEPS.map((step, i) => (
-            <motion.div
-              key={step.num}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-10%' }}
-              transition={{ duration: 0.6, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] }}
+        {STEPS.map((s, i) => (
+          <div
+            key={s.word}
+            className="method-row"
+            style={{
+              display: 'grid',
+              gridTemplateColumns: i % 2 === 0 ? '1.3fr 1fr' : '1fr 1.3fr',
+              gap: 60,
+              alignItems: 'center',
+              marginBottom: 140,
+            }}
+          >
+            <motion.h2
+              initial={{ opacity: 0, x: i % 2 === 0 ? -60 : 60 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: '-15%' }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+              className="serif"
               style={{
-                borderTop: '1px solid rgba(255,255,255,0.15)',
-                paddingTop: 28,
+                fontSize: 'clamp(72px, 13vw, 200px)',
+                margin: 0,
+                order: i % 2 === 0 ? 0 : 1,
+                fontStyle: i === 1 ? 'italic' : 'normal',
               }}
             >
-              <div
-                style={{
-                  fontSize: 15,
-                  fontWeight: 700,
-                  color: '#ff5a36',
-                  marginBottom: 18,
-                }}
-              >
-                {step.num}
-              </div>
-              <h3 style={{ fontSize: 24, fontWeight: 700, margin: '0 0 14px', color: '#fff' }}>
-                {step.title}
-              </h3>
-              <p style={{ fontSize: 16, lineHeight: 1.7, color: 'rgba(255,255,255,0.65)', margin: 0 }}>
-                {step.body}
-              </p>
-            </motion.div>
-          ))}
-        </div>
+              {s.word}
+              <span style={{ fontSize: '0.5em' }}>{i < 2 ? ',' : '.'}</span>
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-15%' }}
+              transition={{ duration: 0.8, delay: 0.15 }}
+              style={{ fontSize: 17, lineHeight: 1.7, margin: 0, maxWidth: 460 }}
+            >
+              {s.body}
+            </motion.p>
+          </div>
+        ))}
       </div>
+      <style>{`@media (max-width: 800px){ .method-row{ grid-template-columns: 1fr !important; } .method-row > *{ order: 0 !important; } }`}</style>
     </section>
   )
 }

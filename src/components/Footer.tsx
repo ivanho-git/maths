@@ -1,169 +1,115 @@
 import { useState } from 'react'
+import { motion } from 'framer-motion'
+import { HeartBubble, Mug, Sparkle } from './Doodles'
 
 export default function Footer() {
   const [email, setEmail] = useState('')
-  const [submitted, setSubmitted] = useState(false)
+  const [done, setDone] = useState(false)
 
   return (
-    <footer id="subscribe" style={{ background: '#fff', borderTop: '1px solid var(--line)' }}>
-      <div className="container-x" style={{ padding: '100px 0 48px' }}>
-        <div
-          style={{
-            textAlign: 'center',
-            maxWidth: 560,
-            margin: '0 auto 64px',
-          }}
-        >
-          <h2
-            style={{
-              fontSize: 'clamp(28px, 4vw, 42px)',
-              fontWeight: 700,
-              letterSpacing: -1,
-              margin: '0 0 16px',
-            }}
-          >
-            Get the next issue
-          </h2>
-          <p style={{ fontSize: 16, color: 'var(--ink-soft)', margin: '0 0 32px' }}>
-            One email a month. Impact stories, chapter news, and free
-            consulting resources. Unsubscribe anytime.
-          </p>
+    <footer id="subscribe">
+      <div className="wrap">
+        <div style={{ background: 'var(--ink)', color: '#fff', borderRadius: 28, padding: '100px 48px 80px', margin: '120px 0 40px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+          <HeartBubble size={100} style={{ position: 'absolute', left: '6%', top: 50, animation: 'bob 5s ease-in-out infinite' }} />
+          <Mug size={80} style={{ position: 'absolute', right: '7%', bottom: 50, animation: 'bob 6s ease-in-out infinite' }} />
+          <Sparkle size={40} style={{ position: 'absolute', right: '18%', top: 60, animation: 'bob 4s ease-in-out infinite' }} />
+          <div className="serif" style={{ fontSize: 'clamp(56px, 10vw, 150px)' }}>
+            {['Never miss', 'an issue'].map((t, i) => (
+              <motion.div
+                key={t}
+                initial={{ opacity: 0, x: i ? 80 : -80 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+                style={{ textAlign: 'center', color: i ? 'var(--lilac)' : '#fff' }}
+              >
+                {t}
+              </motion.div>
+            ))}
+          </div>
 
-          {submitted ? (
-            <div
-              style={{
-                padding: '16px 20px',
-                borderRadius: 999,
-                background: 'var(--coral-soft)',
-                color: 'var(--coral)',
-                fontWeight: 600,
-                fontSize: 15,
-                display: 'inline-block',
-              }}
-            >
-              You're on the list — welcome aboard!
-            </div>
+          {done ? (
+            <p style={{ fontSize: 20, marginTop: 56 }}>Thanks — the next issue is on its way to you.</p>
           ) : (
             <form
               onSubmit={(e) => {
                 e.preventDefault()
-                if (email.trim()) setSubmitted(true)
+                if (email.trim()) setDone(true)
               }}
-              style={{
-                display: 'flex',
-                gap: 10,
-                maxWidth: 440,
-                margin: '0 auto',
-                flexWrap: 'wrap',
-                justifyContent: 'center',
-              }}
+              style={{ display: 'flex', gap: 14, margin: '56px auto 0', flexWrap: 'wrap', maxWidth: 620, justifyContent: 'center' }}
             >
               <input
                 type="email"
                 required
+                placeholder="Your email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@email.com"
                 style={{
-                  flex: '1 1 240px',
-                  padding: '14px 20px',
-                  borderRadius: 999,
-                  border: '1px solid var(--line)',
-                  fontSize: 15,
+                  flex: '1 1 280px',
+                  background: 'transparent',
+                  border: 'none',
+                  borderBottom: '1px solid #fff',
+                  color: '#fff',
+                  fontSize: 18,
+                  padding: '14px 0',
                   outline: 'none',
                 }}
               />
-              <button
-                type="submit"
-                style={{
-                  background: 'var(--navy)',
-                  color: '#fff',
-                  padding: '14px 26px',
-                  borderRadius: 999,
-                  border: 'none',
-                  fontWeight: 600,
-                  fontSize: 15,
-                  cursor: 'pointer',
-                }}
-              >
-                Subscribe
-              </button>
+              <button type="submit" className="pill">Subscribe →</button>
             </form>
           )}
         </div>
 
         <div
           style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            gap: 20,
-            paddingTop: 32,
-            borderTop: '1px solid var(--line)',
+            borderTop: '1px solid var(--red)',
+            padding: '48px 0',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+            gap: 32,
+            fontSize: 14,
+            lineHeight: 1.6,
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontWeight: 700 }}>
-            <span
-              style={{
-                width: 28,
-                height: 28,
-                borderRadius: '50%',
-                background: 'var(--navy)',
-                color: '#fff',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: 10,
-                fontWeight: 800,
-              }}
-            >
-              180
-            </span>
-            180° Consulting Newsletter
+          <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+            <img src="/images/180dc-logo-full.png" alt="180 Degrees Consulting" width={110} style={{ borderRadius: 10, background: "#fff", padding: 6 }} />
+            <div>
+              <strong>180 Degrees Consulting</strong>
+              <br />
+              The student-run consultancy
+              <br />
+              for social impact
+            </div>
           </div>
-
-          <div style={{ display: 'flex', gap: 24, fontSize: 14 }}>
-            <a href="#top" style={{ color: 'var(--ink-soft)', textDecoration: 'none' }}>
-              Back to top
-            </a>
-            <a href="#" style={{ color: 'var(--ink-soft)', textDecoration: 'none' }}>
-              Privacy
-            </a>
-            <a href="#" style={{ color: 'var(--ink-soft)', textDecoration: 'none' }}>
-              Archive
-            </a>
-          </div>
-
-          <div style={{ display: 'flex', gap: 14 }}>
-            {['LinkedIn', 'Instagram', 'X'].map((s) => (
+          <nav style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {['Past issues', 'Privacy policy', 'Contact the editors'].map((l) => (
+              <a key={l} href="#" style={{ color: 'var(--red)', textDecoration: 'none' }}>{l}</a>
+            ))}
+          </nav>
+          <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end', alignItems: 'flex-start' }}>
+            {['in', 'ig', 'x'].map((s) => (
               <a
                 key={s}
                 href="#"
                 aria-label={s}
                 style={{
-                  width: 34,
-                  height: 34,
+                  width: 40,
+                  height: 40,
                   borderRadius: '50%',
-                  border: '1px solid var(--line)',
+                  border: '1px solid var(--red)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: 12,
-                  color: 'var(--ink-soft)',
+                  color: 'var(--red)',
                   textDecoration: 'none',
+                  fontWeight: 600,
                 }}
               >
-                {s[0]}
+                {s}
               </a>
             ))}
           </div>
         </div>
-
-        <p style={{ textAlign: 'center', fontSize: 13, color: 'var(--ink-soft)', marginTop: 32 }}>
-          © {new Date().getFullYear()} 180 Degrees Consulting — a student-run,
-          non-profit organisation. Not affiliated with any single chapter.
-        </p>
       </div>
     </footer>
   )

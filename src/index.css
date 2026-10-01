@@ -1,55 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 :root {
-  --ink: #0f1629;
-  --ink-soft: #4b5368;
-  --paper: #fbfaf8;
-  --line: #e7e4dd;
-  --navy: #10192f;
-  --navy-soft: #1c2944;
-  --coral: #ff5a36;
-  --coral-soft: #ffe4da;
-  --sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --cream: #f3ede8;
+  --red: #00854a; /* brand green (kept var name for existing components) */
+  --green: #00854a;
+  --lilac: #d58be6;
+  --ink: #2b2b2b;
+  --red-soft: rgba(0, 133, 74, 0.12);
+  --serif: 'Anton', 'Impact', sans-serif;
+  --sans: 'Inter', system-ui, sans-serif;
+  --shadow: 3px 3px 0 var(--ink);
 }
 
-* {
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 body {
   margin: 0;
-  font-family: var(--sans);
+  background: var(--cream);
   color: var(--ink);
-  background: var(--paper);
+  font-family: var(--sans);
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
+#root { overflow-x: clip; }
+::selection { background: var(--green); color: #fff; }
 
-#root {
-  min-height: 100vh;
-  overflow-x: hidden;
-}
+.wrap { width: 100%; max-width: 1340px; margin: 0 auto; padding: 0 66px; }
+@media (max-width: 800px) { .wrap { padding: 0 22px; } }
 
-::selection {
-  background: var(--coral);
-  color: #fff;
-}
+.serif { font-family: var(--serif); font-weight: 400; text-transform: none; line-height: 0.95; letter-spacing: -0.01em; }
+.caps { text-transform: uppercase; letter-spacing: 0.3em; font-size: 12px; }
 
-.container-x {
-  width: 100%;
-  max-width: 1180px;
-  margin: 0 auto;
-  padding-left: 24px;
-  padding-right: 24px;
+.pill {
+  display: inline-flex; align-items: center; gap: 12px;
+  border: 1.5px solid var(--ink); border-radius: 999px;
+  padding: 13px 24px; color: var(--ink); text-decoration: none;
+  font-size: 14px; font-weight: 500; background: #fff; cursor: pointer;
+  box-shadow: var(--shadow); text-transform: uppercase;
+  transition: transform .15s, box-shadow .15s;
 }
+.pill:hover { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
 
-@media (max-width: 720px) {
-  .container-x {
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-}
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
+
+@keyframes bob { 0%,100% { translate: 0 0; rotate: 0deg; } 50% { translate: 0 -10px; rotate: 4deg; } }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; } }

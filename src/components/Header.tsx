@@ -1,188 +1,74 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 
-const NAV_LINKS = [
-  { href: '#coverage', label: 'Newsletter' },
-  { href: '#process', label: 'How It Works' },
-  { href: '#why', label: 'Why Subscribe' },
-  { href: '#chapters', label: 'Chapters' },
+const LINKS = [
+  { href: '/', label: 'Home' },
+  { href: '/articles', label: 'All articles' },
+  { href: '/#method', label: 'How it works' },
+  { href: '#subscribe', label: 'Subscribe' },
 ]
 
-export default function Header() {
-  const [scrolled, setScrolled] = useState(false)
-  const [menuOpen, setMenuOpen] = useState(false)
+export function Logo({ size = 34 }: { size?: number; color?: string }) {
+  return <img src="/images/180dc-mark.png" width={size} height={size} alt="180 Degrees Consulting" style={{ display: 'block', objectFit: 'contain' }} />
+}
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24)
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+export default function Header() {
+  const [open, setOpen] = useState(false)
 
   return (
-    <header
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 50,
-        transition: 'background 0.3s ease, box-shadow 0.3s ease',
-        background: scrolled ? 'rgba(251,250,248,0.92)' : 'transparent',
-        backdropFilter: scrolled ? 'blur(10px)' : 'none',
-        boxShadow: scrolled ? '0 1px 0 var(--line)' : 'none',
-      }}
-    >
-      <div
-        className="container-x"
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          height: 76,
-        }}
-      >
-        <a
-          href="#top"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 10,
-            textDecoration: 'none',
-            color: 'var(--ink)',
-            fontWeight: 700,
-            fontSize: 18,
-          }}
-        >
-          <span
-            style={{
-              width: 32,
-              height: 32,
-              borderRadius: '50%',
-              background: 'var(--navy)',
-              color: '#fff',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: 11,
-              fontWeight: 800,
-            }}
-          >
-            180
-          </span>
-          180° Consulting
-          <span style={{ color: 'var(--coral)', fontWeight: 600 }}>
-            Newsletter
-          </span>
+    <>
+      <nav className="pill-nav">
+        <a href="#subscribe" className="pill-nav-side">Subscribe</a>
+        <a href="/" className="pill-nav-logo" aria-label="Home">
+          <Logo size={24} /> <span>180° Newsletter</span>
         </a>
+        <button type="button" className="pill-nav-side" onClick={() => setOpen(true)} aria-label="Open menu">Menu</button>
+      </nav>
 
-        <nav
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 32,
-          }}
-          className="desktop-nav"
-        >
-          {NAV_LINKS.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              style={{
-                color: 'var(--ink-soft)',
-                textDecoration: 'none',
-                fontSize: 15,
-                fontWeight: 500,
-              }}
-            >
-              {link.label}
-            </a>
-          ))}
-          <a
-            href="#subscribe"
-            style={{
-              background: 'var(--coral)',
-              color: '#fff',
-              padding: '10px 20px',
-              borderRadius: 999,
-              fontSize: 14,
-              fontWeight: 600,
-              textDecoration: 'none',
-            }}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ clipPath: 'inset(0 0 100% 0)' }}
+            animate={{ clipPath: 'inset(0 0 0% 0)' }}
+            exit={{ clipPath: 'inset(0 0 100% 0)' }}
+            transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
+            style={{ position: 'fixed', inset: 0, zIndex: 70, background: 'var(--green)', color: '#fff' }}
           >
-            Subscribe
-          </a>
-        </nav>
-
-        <button
-          type="button"
-          onClick={() => setMenuOpen((v) => !v)}
-          className="mobile-nav-toggle"
-          aria-label="Toggle menu"
-          style={{
-            display: 'none',
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            padding: 8,
-          }}
-        >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M3 6h18M3 12h18M3 18h18"
-              stroke="var(--ink)"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-          </svg>
-        </button>
-      </div>
-
-      {menuOpen && (
-        <div
-          className="container-x"
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 16,
-            paddingBottom: 24,
-            background: 'var(--paper)',
-          }}
-        >
-          {NAV_LINKS.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              onClick={() => setMenuOpen(false)}
-              style={{ color: 'var(--ink)', textDecoration: 'none', fontSize: 16, fontWeight: 500 }}
-            >
-              {link.label}
-            </a>
-          ))}
-          <a
-            href="#subscribe"
-            onClick={() => setMenuOpen(false)}
-            style={{
-              background: 'var(--coral)',
-              color: '#fff',
-              padding: '12px 20px',
-              borderRadius: 999,
-              fontSize: 14,
-              fontWeight: 600,
-              textDecoration: 'none',
-              textAlign: 'center',
-            }}
-          >
-            Subscribe
-          </a>
-        </div>
-      )}
+            <div className="wrap" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', height: 120, alignItems: 'center' }}>
+                <button type="button" aria-label="Close menu" onClick={() => setOpen(false)} className="pill" style={{ padding: '10px 18px' }}>
+                  Close ×
+                </button>
+              </div>
+              <nav style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                {LINKS.map((l, i) => (
+                  <motion.a
+                    key={l.href}
+                    href={l.href}
+                    onClick={() => setOpen(false)}
+                    initial={{ y: 60, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.25 + i * 0.07, duration: 0.6 }}
+                    className="serif"
+                    style={{ color: '#fff', textDecoration: 'none', fontSize: 'clamp(52px, 9vw, 120px)' }}
+                  >
+                    {l.label}
+                  </motion.a>
+                ))}
+              </nav>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <style>{`
-        @media (max-width: 860px) {
-          .desktop-nav { display: none !important; }
-          .mobile-nav-toggle { display: inline-flex !important; }
-        }
+        .pill-nav { position: fixed; top: 28px; left: 50%; transform: translateX(-50%); z-index: 60; display: grid; grid-template-columns: auto 1fr auto; align-items: center; width: min(440px, calc(100vw - 32px)); height: 50px; background: #fff; border: 1.5px solid var(--ink); border-radius: 999px; box-shadow: var(--shadow); }
+        .pill-nav-side { padding: 0 18px; font-family: var(--serif); font-size: 15px; text-transform: uppercase; color: var(--ink); text-decoration: none; height: 26px; display: flex; align-items: center; background: none; border: none; cursor: pointer; }
+        .pill-nav-side:first-child { border-right: 2px solid var(--ink); }
+        .pill-nav-side:last-child { border-left: 2px solid var(--ink); }
+        .pill-nav-logo { display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--ink); text-decoration: none; font-family: var(--serif); font-size: 18px; white-space: nowrap; }
+        @media (max-width: 420px) { .pill-nav-logo span { display: none; } }
       `}</style>
-    </header>
+    </>
   )
 }
