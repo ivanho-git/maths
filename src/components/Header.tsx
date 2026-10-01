@@ -2,9 +2,9 @@ import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 
 const LINKS = [
-  { href: '#coverage', label: 'Inside the issue' },
-  { href: '#method', label: 'Our method' },
-  { href: '#why', label: 'Why read us' },
+  { href: '/#coverage', label: 'Inside the issue' },
+  { href: '/articles', label: 'All articles' },
+  { href: '/#method', label: 'Our method' },
   { href: '#subscribe', label: 'Subscribe' },
 ]
 
@@ -33,7 +33,7 @@ export default function Header() {
               borderBottom: '1px solid var(--red)',
             }}
           >
-            <a href="#top" style={{ display: 'flex' }}>
+            <a href="/" aria-label="Home" style={{ display: 'flex' }}>
               <Logo />
             </a>
             <span className="caps header-label" style={{ fontSize: 11 }}>The 180° Newsletter</span>
