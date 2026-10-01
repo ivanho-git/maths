@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import Photo from './Photo'
+import DragGallery from './DragGallery'
 
 const SECTIONS = [
   {
@@ -64,7 +64,7 @@ export default function Coverage() {
               <div className="serif" style={{ fontSize: 'clamp(40px, 6vw, 84px)' }}>{s.n}</div>
               <div>
                 <div style={{ fontSize: 14, marginBottom: 22 }}>{s.kicker}</div>
-                <h2 className="serif" style={{ fontSize: 'clamp(48px, 7vw, 96px)', margin: '0 0 56px' }}>
+                <h2 className="serif" style={{ fontSize: 'clamp(38px, 7vw, 96px)', margin: '0 0 56px' }}>
                   {s.title.map((t, i) => (
                     <motion.span
                       key={t}
@@ -97,27 +97,7 @@ export default function Coverage() {
               </div>
             </div>
 
-            <div
-              className="no-scrollbar"
-              style={{
-                display: 'grid',
-                gridAutoFlow: 'column',
-                gridAutoColumns: 'minmax(300px, 40%)',
-                gap: 32,
-                overflowX: 'auto',
-                marginTop: 90,
-                scrollSnapType: 'x mandatory',
-              }}
-            >
-              {s.photos.map((p, i) => {
-                const c = typeof p === 'string' ? { caption: p } : p
-                return (
-                <div key={c.caption} style={{ scrollSnapAlign: 'start' }}>
-                  <Photo caption={c.caption} src={'src' in c ? c.src : undefined} fit={'fit' in c ? c.fit : 'cover'} index={i} />
-                </div>
-                )
-              })}
-            </div>
+            <DragGallery items={s.photos.map(p => typeof p === 'string' ? { caption: p } : p)} label={`${s.title.join(' ')} gallery`} />
           </div>
         ))}
       </div>

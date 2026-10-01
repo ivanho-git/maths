@@ -18,6 +18,7 @@ body {
   font-family: var(--sans);
   -webkit-font-smoothing: antialiased;
 }
+#root { overflow-x: clip; }
 ::selection { background: var(--red); color: var(--cream); }
 
 .wrap { width: 100%; max-width: 1340px; margin: 0 auto; padding: 0 66px; }

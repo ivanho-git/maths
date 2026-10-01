@@ -8,12 +8,14 @@ export default function Photo({
   index = 0,
   ratio = '4/3',
   fit = 'cover',
+  draggable,
 }: {
   src?: string
   caption: string
   index?: number
   ratio?: string
   fit?: 'cover' | 'contain'
+  draggable?: boolean
 }) {
   return (
     <motion.figure
@@ -32,7 +34,7 @@ export default function Photo({
         }}
       >
         {src ? (
-          <img src={src} alt={caption} style={{ width: '100%', height: '100%', objectFit: fit, padding: fit === 'contain' ? '8%' : 0, display: 'block' }} />
+          <img src={src} alt={caption} draggable={draggable} style={{ width: '100%', height: '100%', objectFit: fit, padding: fit === 'contain' ? '8%' : 0, display: 'block' }} />
         ) : (
           <div
             style={{
